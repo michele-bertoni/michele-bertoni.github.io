@@ -33,7 +33,7 @@
 			}
 			
 			var container;
-			var activeCamera, fpCamera, tpCamera, controlsCamera, scene, controls, helper;
+			var user, activeCamera, fpCamera, tpCamera, controlsCamera, scene, controls, helper;
 			var virhas, virhas_body, virhas_wheel0, virhas_wheel1, virhas_wheel2, virhas_pan, virhas_tilt, virhas_pantilt;
 			var rotWorldMatrix;
 			var speed0, speed1, speed2, speed_pan, speed_tilt;
@@ -72,6 +72,10 @@
 				tpCamera.add( pointLight.clone() );
 				controlsCamera.add( pointLight.clone() );
 				scene.add( controlsCamera );
+
+				user = new THREE.Group();
+				user.position.set(0, 0, 0);
+				user.add(fpCamera);
 
 				helper = new THREE.CameraHelper(fpCamera);
 				scene.add(helper);
@@ -209,7 +213,7 @@
 								fpCamera.rotation.z = Math.PI;
 								fpCamera.position.z = 40;
 								fpCamera.position.y = -28.4;
-								virhas_tilt.add(fpCamera);
+								virhas_tilt.add(user);
 								virhas_pantilt.add( virhas_tilt );
 								virhas_pantilt.position.z = -65;
 								virhas.add(virhas_pantilt);
