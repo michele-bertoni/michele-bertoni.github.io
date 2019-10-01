@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="icon" type="image/png" href="favicon.png" />
+		<title>ViRHaS - Simulator</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+		<link type="text/css" rel="stylesheet" href="main.css">
+		<!-- WebXR Device API (For Chrome M76+), expires 10/16/2019 -->
+		<meta http-equiv="origin-trial" content="AgNyW0SVD+KypUB8gL1YdtIVt2wICXJ33bqXY/BNa/EqayhAKk9YaP/5Z3PIa0QUFQCiGLVKYaOBGxgsXPEUoQ8AAAB0eyJvcmlnaW4iOiJodHRwczovL21pY2hlbGUtYmVydG9uaS5naXRodWIuaW86NDQzIiwiZmVhdHVyZSI6IldlYlhSRGV2aWNlTTc2IiwiZXhwaXJ5IjoxNTczNTY4ODg2LCJpc1N1YmRvbWFpbiI6dHJ1ZX0=">
+	</head>
+	<body>
+		<script src="js/vr/HelioWebXRPolyfill.js"></script>
+		<script type="module">
+			import * as THREE from './build/three.module.js';
+			import { WEBGL } from './js/webgl.js';
+			import { DDSLoader } from './js/loaders/DDSLoader.js';
+			import { MTLLoader } from './js/loaders/MTLLoader.js';
+			import { OBJLoader } from './js/loaders/OBJLoader.js';
+			import { OrbitControls } from './js/controls/OrbitControls.js';
+			import { WEBVR } from './js/vr/WebVR.js';
+
+			document.documentElement.style.overflow = 'hidden';  
+    		document.body.scroll = "no";
+
+			if ( WEBGL.isWebGL2Available() === false ) {
+
+			document.body.appendChild( WEBGL.getWebGL2ErrorMessage() );
+
+			}
+			
+			var container;
+			var activeCamera, fpCamera, tpCamera, controlsCamera, scene, controls, helper;
+			var virhas, virhas_body, virhas_wheel0, virhas_wheel1, virhas_wheel2, virhas_pan, virhas_tilt, virhas_pantilt;
+			var rotWorldMatrix;
+			var speed0, speed1, speed2, speed_pan, speed_tilt;
+			var isPanReset=false, isTiltReset=false, isPanDecreasing=false, isTiltDecreasing=false;
+			var canvas, context, renderer;
+			var gridXZ, geometry, material, floor;
+			var ambientLight, pointLight;
+			var timer;
+
+			const m1_R = (-1.0 / 3.5);
+			const mL_R = (-12.50 / 3.5);
+			const C60_R = (0.500000000 / 3.5);  // cos(60°) / R
+			const C30_R = (0.866025404 / 3.5);  // cos(30°) / R
+
+			init();
+			animate();
+
+			function init() {
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				fpCamera = new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 1, 3000 );
+				tpCamera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 3000 );
+				controlsCamera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 3000 );
+				//setActiveCamera(fpCamera);
+
+				// scene
+
+				scene = new THREE.Scene();
+
+				ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
+				scene.add( ambientLight );
+
+				pointLight = new THREE.PointLight( 0xffffff, 0.8 );
+				fpCamera.add( pointLight );
+				tpCamera.add( pointLight.clone() );
+				controlsCamera.add( pointLight.clone() );
+				scene.add( controlsCamera );
+
+				helper = new THREE.CameraHelper(fpCamera);
+				scene.add(helper);
+
+				//floor
+				gridXZ = new THREE.GridHelper(10000, 250, new THREE.Color(0xff0000), new THREE.Color(0x00ff00) );
+			    scene.add(gridXZ);
+
+			    geometry = new THREE.PlaneGeometry( 10000, 10000, 1, 1 );
+				material = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
+				floor = new THREE.Mesh( geometry, material );
+				floor.material.side = THREE.DoubleSide;
+				floor.rotation.x = Math.PI/2;
+				//scene.add( floor ); 
+
+				//model loader
+				virhas = new THREE.Group();
+				virhas_pantilt = new THREE.Group();
+				var onProgress = function ( xhr ) {
+
+						if ( xhr.lengthComputable ) {
+
+							var percentComplete = xhr.loaded / xhr.total * 100;
+							console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
+
+						}
+
+					};
+
+				var onError = function () { };
+
+				THREE.Loader.Handlers.add( /\.dds$/i, new DDSLoader() );
+
+				new MTLLoader()
+					.setPath( 'models/virhas/' )
+					.load( 'virhas_body.mtl', function ( materials ) {
+
+						materials.preload();
+
+						new OBJLoader()
+							.setMaterials( materials )
+							.setPath( 'models/virhas/' )
+							.load( 'virhas_body.obj', function ( object ) {
+
+								object.position.y = 34.16;
+								//object.position.z = -30;
+								object.rotation.z = Math.PI;
+								object.rotation.x = -Math.PI/2;
+								virhas_body = object;
+								virhas.add( virhas_body );
+								tpCamera.position.y = 400;
+								tpCamera.position.z = 600;
+								tpCamera.lookAt(new THREE.Vector3(0, 220, 125));
+								virhas.add( tpCamera );
+
+							}, onProgress, onError );
+
+					} );
+
+				new MTLLoader()
+					.setPath( 'models/virhas/' )
+					.load( 'virhas_wheel.mtl', function ( materials ) {
+
+						materials.preload();
+
+						new OBJLoader()
+							.setMaterials( materials )
+							.setPath( 'models/virhas/' )
+							.load( 'virhas_wheel.obj', function ( object ) {
+
+								object.position.y = 34.16;
+								//object.rotation.z = Math.PI;
+								//object.rotation.x = -Math.PI/2;
+								rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI);
+								rotateAroundWorldAxis(object, new THREE.Vector3(1, 0, 0), -Math.PI/2);
+								//rotateAroundWorldAxis(object, new THREE.Vector3(0, 1, 0), 2/3*Math.PI);
+								//rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI/6);
+								//object.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0, -30) );
+								virhas_wheel1 = object;
+								virhas_wheel1.rotation.order = 'XZY';
+								virhas_wheel0 = object.clone();
+								//rotateAroundWorldAxis(virhas_wheel2, new THREE.Vector3(0, 1, 0), 2/3*Math.PI);
+								virhas_wheel0.rotation.order = 'XZY';
+								virhas_wheel0.rotation.z = -1/3*Math.PI;
+								virhas_wheel2 = object.clone();
+								//rotateAroundWorldAxis(virhas_wheel3, new THREE.Vector3(0, 1, 0), -2/3*Math.PI);
+								virhas_wheel2.rotation.order = 'XZY';
+								virhas_wheel2.rotation.z = 1/3*Math.PI;
+								virhas.add( virhas_wheel0 );
+								virhas.add( virhas_wheel1 );
+								virhas.add( virhas_wheel2 );
+
+							}, onProgress, onError );
+
+					} );
+
+				new MTLLoader()
+					.setPath( 'models/virhas/' )
+					.load( 'virhas_pan.mtl', function ( materials ) {
+
+						materials.preload();
+
+						new OBJLoader()
+							.setMaterials( materials )
+							.setPath( 'models/virhas/' )
+							.load( 'virhas_pan.obj', function ( object ) {
+
+								object.position.y = 210.5+34.16;
+								rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI);
+								rotateAroundWorldAxis(object, new THREE.Vector3(1, 0, 0), -Math.PI/2);
+								virhas_pan = object;
+								virhas_pantilt.add( virhas_pan );
+
+							}, onProgress, onError );
+
+					} );
+
+				new MTLLoader()
+					.setPath( 'models/virhas/' )
+					.load( 'virhas_tilt.mtl', function ( materials ) {
+
+						materials.preload();
+
+						new OBJLoader()
+							.setMaterials( materials )
+							.setPath( 'models/virhas/' )
+							.load( 'virhas_tilt.obj', function ( object ) {
+
+								object.position.y = 210.5+34.16;
+								object.position.z = -41.3;
+								rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI);
+								rotateAroundWorldAxis(object, new THREE.Vector3(1, 0, 0), -Math.PI/2);
+								virhas_tilt = object;
+								fpCamera.rotation.x = -Math.PI/2;
+								fpCamera.rotation.z = Math.PI;
+								fpCamera.position.z = 40;
+								fpCamera.position.y = -28.4;
+								virhas_tilt.add(fpCamera);
+								virhas_pantilt.add( virhas_tilt );
+								virhas_pantilt.position.z = -65;
+								virhas.add(virhas_pantilt);
+
+							}, onProgress, onError );
+
+					} );
+				scene.add(virhas);
+
+				canvas = document.createElement( 'canvas' );
+				context = canvas.getContext( 'webgl2', { alpha: false } );
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.vr.enabled = true;
+				document.body.appendChild( renderer.domElement );
+
+				//
+
+				document.body.appendChild( WEBVR.createButton( renderer ) );
+
+
+				//timer
+				timer = new THREE.Clock();
+
+
+				//controls
+				controls = new OrbitControls( controlsCamera, renderer.domElement );
+
+				controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+				controls.enableZoom = true;
+				controls.dampingFactor = 0.05;
+
+				controls.screenSpacePanning = false;
+
+				controls.minDistance = 0;
+				controls.maxDistance = Infinity;
+
+				controls.maxPolarAngle = Math.PI / 2;
+
+				controlsCamera.position.y = 400;
+				window.addEventListener( 'resize', onWindowResize, false );
+			}
+
+			function onWindowResize(){
+			    fpCamera.aspect = window.innerWidth / window.innerHeight;
+			    fpCamera.updateProjectionMatrix();
+
+			    tpCamera.aspect = window.innerWidth / window.innerHeight;
+			    tpCamera.updateProjectionMatrix();
+
+			    controlsCamera.aspect = window.innerWidth / window.innerHeight;
+			    controlsCamera.updateProjectionMatrix();
+
+			    renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+			function animate() {
+				renderer.setAnimationLoop(render);
+			}
+
+			function render() {
+				var deltaT = timer.getDelta();
+				
+				try {
+					move(0, 0.70, 0.3, deltaT);
+					rotatePanTilt(-0.5, 0.3, deltaT);
+					if(timer.getElapsedTime() > 7 && timer.getElapsedTime() < 100)
+						resetPanTilt();
+
+				} catch(e) {
+					return;
+				}
+				controls.update();
+				renderer.render( scene, fpCamera );
+			}
+			
+			if ( WEBGL.isWebGLAvailable() ) {
+				// Initiate function or other initializations here
+				animate();
+			} else {
+				var warning = WEBGL.getWebGLErrorMessage();
+				document.getElementById( 'container' ).appendChild( warning );
+			}
+
+			function rotateAroundWorldAxis(object, axis, radians) {
+			    rotWorldMatrix = new THREE.Matrix4();
+			    rotWorldMatrix.makeRotationAxis(axis.normalize(), radians);
+
+			    // old code for Three.JS pre r54:
+			    //  rotWorldMatrix.multiply(object.matrix);
+			    // new code for Three.JS r55+:
+			    rotWorldMatrix.multiply(object.matrix);                // pre-multiply
+
+			    object.matrix = rotWorldMatrix;
+
+			    // old code for Three.js pre r49:
+			    // object.rotation.getRotationFromMatrix(object.matrix, object.scale);
+			    // old code for Three.js pre r59:
+			    // object.rotation.setEulerFromRotationMatrix(object.matrix);
+			    // code for r59+:
+			    object.rotation.setFromRotationMatrix(object.matrix);
+			}
+
+			function move(strafe, forward, angular, deltaT) {
+				run(-80*strafe, 80*forward, 4*angular);
+				makeOdometry(deltaT);
+				virhas_wheel0.rotation.y -= speed0*deltaT;
+				virhas_wheel1.rotation.y -= speed1*deltaT;
+				virhas_wheel2.rotation.y -= speed2*deltaT;
+			}
+
+			function run(strafe, forward, angular) {
+			    const dx12 = C60_R * strafe;
+				const dy12 = C30_R * forward;
+				const dthz123 = mL_R * angular;
+
+				speed0 = dx12 + dy12 + dthz123;  	//motore anteriore dx
+				speed1 = m1_R * strafe + dthz123;	//motore posteriore
+				speed2 = dx12 - dy12 + dthz123;		//motore anteriore sx
+			}
+
+			function makeOdometry(deltaT){
+			   	var speedX = 0.5*3.5*(speed0 - speed2)/Math.cos(Math.PI/6.0);
+			   	var speedY = 3.5*(speed2 + speed0-2.0*speed1)/3.0;
+			   	var speedTh= 3.5*(speed2+speed0+speed1)/3.0/12.5;
+
+			   	var delta_x = (speedX * Math.cos(virhas.rotation.y) - speedY * Math.sin(virhas.rotation.y)) * deltaT;
+     			var delta_y = (speedX * Math.sin(virhas.rotation.y) + speedY * Math.cos(virhas.rotation.y)) * deltaT;
+     			var delta_th = speedTh * deltaT;
+
+				virhas.position.x-=delta_y*10;
+				virhas.position.z-=delta_x*10;
+				virhas.rotation.y+=delta_th;
+			}
+
+			function rotatePanTilt(speedpan, speedtilt, deltaT) {
+				if(isPanReset || isTiltReset)
+					pendingResetPanTilt(deltaT);
+				else {
+					virhas_pantilt.rotation.y += speedpan*Math.PI/3*deltaT;
+					if(virhas_pantilt.rotation.y < -Math.PI/2)
+						virhas_pantilt.rotation.y = -Math.PI/2;
+					else if(virhas_pantilt.rotation.y > Math.PI/2)
+						virhas_pantilt.rotation.y = Math.PI/2;
+
+					virhas_tilt.rotation.x -= speedtilt*Math.PI/3*deltaT;
+					if(virhas_tilt.rotation.x > 0)
+						virhas_tilt.rotation.x = 0;
+					else if(virhas_tilt.rotation.x < -Math.PI)
+						virhas_tilt.rotation.x = -Math.PI;
+				}
+			}
+
+			function pendingResetPanTilt(deltaT) {
+				if(isPanReset) {
+					if(isPanDecreasing) {
+						virhas_pantilt.rotation.y -= 5*Math.PI/3*deltaT;
+						if(virhas_pantilt.rotation.y < 0) {
+							virhas_pantilt.rotation.y = 0;
+							isPanReset = false;
+						}
+					}
+					else {
+						virhas_pantilt.rotation.y += 5*Math.PI/3*deltaT;
+						if(virhas_pantilt.rotation.y > 0) {
+							virhas_pantilt.rotation.y = 0;
+							isPanReset = false;
+						}
+					}
+				}
+
+				if(isTiltReset) {
+					if(isTiltDecreasing) {
+						virhas_tilt.rotation.x += 5*Math.PI/3*deltaT;
+						if(virhas_tilt.rotation.x > -Math.PI/2) {
+							virhas_tilt.rotation.x = -Math.PI/2;
+							isTiltReset = false;
+						}
+					}
+					else {
+						virhas_tilt.rotation.x -= 5*Math.PI/3*deltaT;
+						if(virhas_tilt.rotation.x < -Math.PI/2) {
+							virhas_tilt.rotation.x = -Math.PI/2;
+							isTiltReset = false;
+						}
+					}
+				}
+			}
+
+			function resetPanTilt() {
+				isPanReset = true;
+				isTiltReset = true;
+
+				isPanDecreasing = virhas_pantilt.rotation.y>0 ? true : false;
+				isTiltDecreasing = virhas_tilt.rotation.x<-Math.PI/2 ? true : false;
+			}
+
+			/*function setActiveCamera(camera) {
+				var cams = [fpCamera, tpCamera, controlsCamera];
+				cams.forEach(function(element) {
+				  if(camera==element) {
+				  	element.se
+				  }
+				});
+			}*/
+
+		</script>
+	</body>
+</html>
