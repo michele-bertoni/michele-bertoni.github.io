@@ -132,7 +132,7 @@
 								virhas.add( virhas_body );
 								thirdPerson.position.y = 400;
 								thirdPerson.position.z = 600;
-								thirdPerson.lookAt(new THREE.Vector3(0, 220, 125));
+								tpCamera.lookAt(new THREE.Vector3(0, 220, 125));
 								virhas.add( thirdPerson );
 
 							}, onProgress, onError );
