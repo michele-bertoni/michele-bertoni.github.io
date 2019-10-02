@@ -32,7 +32,7 @@
 			}
 			
 			var container;
-			var activeCamera, fpCamera, tpCamera, scene, helper;
+			var activeCamera=0, camera, scene, helper;
 			var firstPerson, thirdPerson;
 			var virhas, virhas_body, virhas_wheel0, virhas_wheel1, virhas_wheel2, virhas_pan, virhas_tilt, virhas_pantilt;
 			var rotWorldMatrix;
@@ -41,7 +41,7 @@
 			var canvas, context, renderer;
 			var gridXZ, geometry, material, floor;
 			var ambientLight, pointLight;
-			var timer;
+			var timer, switchedCamera=false;
 
 			const m1_R = (-1.0 / 3.5);
 			const mL_R = (-12.50 / 3.5);
@@ -61,8 +61,8 @@
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
-				fpCamera = new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 1, 5000 );
-				tpCamera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 5000 );
+				camera = [	new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 1, 5000 ),
+							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 5000 ) ];
 
 				// scene
 
@@ -72,18 +72,18 @@
 				scene.add( ambientLight );
 
 				pointLight = new THREE.PointLight( 0xffffff, 0.8 );
-				fpCamera.add( pointLight );
-				tpCamera.add( pointLight.clone() );
+				camera[0].add( pointLight );
+				camera[1].add( pointLight.clone() );
 
 				firstPerson = new THREE.Group();
 				firstPerson.position.set(0, 0, 0);
-				firstPerson.add(fpCamera);
+				firstPerson.add(camera[0]);
 				thirdPerson = new THREE.Group();
 				thirdPerson.position.set(0, 0, 0);
-				thirdPerson.add(tpCamera);
+				thirdPerson.add(camera[1]);
 
 				//helper
-				helper = new THREE.CameraHelper(fpCamera);
+				helper = new THREE.CameraHelper(camera[0]);
 				scene.add(helper);
 
 				//gamepad
@@ -146,8 +146,8 @@
 								virhas.add( virhas_body );
 								thirdPerson.position.y = 400;
 								thirdPerson.position.z = 300;
-								tpCamera.position.z = 300;
-								tpCamera.lookAt(new THREE.Vector3(0, 220, 125));
+								camera[1].position.z = 300;
+								camera[1].lookAt(new THREE.Vector3(0, 220, 125));
 								virhas.add( thirdPerson );
 
 							}, onProgress, onError );
@@ -260,11 +260,11 @@
 			}
 
 			function onWindowResize(){
-			    fpCamera.aspect = window.innerWidth / window.innerHeight;
-			    fpCamera.updateProjectionMatrix();
+			    camera[0].aspect = window.innerWidth / window.innerHeight;
+			    camera[0].updateProjectionMatrix();
 
-			    tpCamera.aspect = window.innerWidth / window.innerHeight;
-			    tpCamera.updateProjectionMatrix();
+			    camera[1].aspect = window.innerWidth / window.innerHeight;
+			    camera[1].updateProjectionMatrix();
 
 			    renderer.setSize( window.innerWidth, window.innerHeight );
 			}
@@ -284,7 +284,7 @@
 					return;
 				}
 
-				renderer.render( scene, tpCamera );
+				renderer.render( scene, camera[activeCamera] );
 			}
 			
 			function rotateAroundWorldAxis(object, axis, radians) {
@@ -424,7 +424,17 @@
 					speedPan = Math.abs(gamepad.axes[2]) >= 0.09 ? gamepad.axes[2] : 0.00;
 					speedTilt = Math.abs(gamepad.axes[3]) >= 0.09 ? -gamepad.axes[3] : 0.00;
 				}
+				if(gamepad.buttons[8].pressed && !switchedCamera) {
+					switchCamera();
+				} else if(!gamepad.buttons[8].pressed) {
+					switchedCamera = false;
+				}
 
+			}
+
+			function switchCamera() {
+				activeCamera = (activeCamera+1)%2;
+				switchedCamera = true;
 			}
 
 		</script>
