@@ -94,9 +94,9 @@ var DeviceOrientationControls = function ( object ) {
 
 			var alpha = -Math.PI;//device.alpha ? _Math.degToRad( -device.alpha ) + scope.alphaOffset : -Math.PI; // ROLL
 
-			var beta = device.beta ? _Math.degToRad( -device.beta ) : 0; // TILT
+			var beta = device.beta ? -_Math.degToRad( device.beta ) : 0; // TILT
 
-			var gamma = device.gamma ? _Math.degToRad( -device.gamma ) : 0; // PAN
+			var gamma = device.gamma ? -_Math.degToRad( device.gamma ) : 0; // PAN
 
 			var orient = scope.screenOrientation ? _Math.degToRad( scope.screenOrientation ) : 0; // O
 
