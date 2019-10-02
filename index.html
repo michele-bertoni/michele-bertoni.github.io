@@ -36,7 +36,7 @@
 			var firstPerson, thirdPerson;
 			var virhas, virhas_body, virhas_wheel0, virhas_wheel1, virhas_wheel2, virhas_pan, virhas_tilt, virhas_pantilt;
 			var rotWorldMatrix;
-			var speed0, speed1, speed2, speed_pan, speed_tilt;
+			var speed0, speed1, speed2, speedPan, speedTilt, speedStrafe, speedForward, speedAngular;
 			var isPanReset=false, isTiltReset=false, isPanDecreasing=false, isTiltDecreasing=false;
 			var canvas, context, renderer;
 			var gridXZ, geometry, material, floor;
@@ -49,14 +49,20 @@
 			const C30_R = (0.866025404 / 3.5);  // cos(30°) / R
 
 			init();
-			animate();
+			if ( WEBGL.isWebGLAvailable() ) {
+				// Initiate function or other initializations here
+				animate();
+			} else {
+				var warning = WEBGL.getWebGLErrorMessage();
+				document.getElementById( 'container' ).appendChild( warning );
+			}
 
 			function init() {
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
-				fpCamera = new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 1, 3000 );
-				tpCamera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 3000 );
+				fpCamera = new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 1, 5000 );
+				tpCamera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 5000 );
 
 				// scene
 
@@ -76,8 +82,21 @@
 				thirdPerson.position.set(0, 0, 0);
 				thirdPerson.add(tpCamera);
 
+				//helper
 				helper = new THREE.CameraHelper(fpCamera);
 				scene.add(helper);
+
+				//gamepad
+				window.addEventListener("gamepadconnected", (event) => {
+					console.log("A gamepad connected:");
+					console.log(event.gamepad);
+				});
+				window.addEventListener("gamepaddisconnected", (event) => {
+					console.log("A gamepad disconnected:");
+					console.log(event.gamepad);
+				});
+
+
 
 				//floor
 				gridXZ = new THREE.GridHelper(10000, 250, new THREE.Color(0xff0000), new THREE.Color(0x00ff00) );
@@ -256,27 +275,18 @@
 
 			function render() {
 				var deltaT = timer.getDelta();
-				
+				handleGamepad();
 				try {
-					move(0, 0.70, 0.3, deltaT);
-					rotatePanTilt(-0.5, 0.3, deltaT);
-					if(timer.getElapsedTime() > 7 && timer.getElapsedTime() < 100)
-						resetPanTilt();
+					move(speedStrafe, speedForward, speedAngular, deltaT);
+					rotatePanTilt(speedPan, speedTilt, deltaT);
 
 				} catch(e) {
 					return;
 				}
-				renderer.render( scene, fpCamera );
+
+				renderer.render( scene, tpCamera );
 			}
 			
-			if ( WEBGL.isWebGLAvailable() ) {
-				// Initiate function or other initializations here
-				animate();
-			} else {
-				var warning = WEBGL.getWebGLErrorMessage();
-				document.getElementById( 'container' ).appendChild( warning );
-			}
-
 			function rotateAroundWorldAxis(object, axis, radians) {
 			    rotWorldMatrix = new THREE.Matrix4();
 			    rotWorldMatrix.makeRotationAxis(axis.normalize(), radians);
@@ -332,7 +342,7 @@
 				if(isPanReset || isTiltReset)
 					pendingResetPanTilt(deltaT);
 				else {
-					virhas_pantilt.rotation.y += speedpan*Math.PI/3*deltaT;
+					virhas_pantilt.rotation.y -= speedpan*Math.PI/3*deltaT;
 					if(virhas_pantilt.rotation.y < -Math.PI/2)
 						virhas_pantilt.rotation.y = -Math.PI/2;
 					else if(virhas_pantilt.rotation.y > Math.PI/2)
@@ -388,6 +398,33 @@
 
 				isPanDecreasing = virhas_pantilt.rotation.y>0 ? true : false;
 				isTiltDecreasing = virhas_tilt.rotation.x<-Math.PI/2 ? true : false;
+			}
+
+			function handleGamepad() {
+				var gamepad = navigator.getGamepads()[0];
+				if(gamepad===null || !gamepad.connected) {
+					speedStrafe = 0.00;
+					speedForward = 0.00;
+					speedAngular = 0.00;
+					speedPan = 0.00;
+					speedTilt = 0.00;
+					return;
+				}
+				var turbo = gamepad.buttons[0].pressed ? 1.0 : 0.5;
+				var accelerator = gamepad.buttons[7].value - gamepad.buttons[6].value;
+				console.log(accelerator);
+				speedStrafe = Math.abs(gamepad.axes[0]) >= 0.09 ? gamepad.axes[0]*accelerator*turbo : 0.00;
+				speedForward = Math.abs(gamepad.axes[1]) >= 0.09 ? -gamepad.axes[1]*accelerator*turbo : 0.00;
+				speedAngular = (gamepad.buttons[5].value - gamepad.buttons[4].value)*turbo;
+				if(gamepad.buttons[11].pressed){
+					resetPanTilt();
+					speedPan = 0.00;
+					speedTilt = 0.00;
+				} else {
+					speedPan = Math.abs(gamepad.axes[2]) >= 0.09 ? gamepad.axes[2] : 0.00;
+					speedTilt = Math.abs(gamepad.axes[3]) >= 0.09 ? -gamepad.axes[3] : 0.00;
+				}
+
 			}
 
 		</script>
