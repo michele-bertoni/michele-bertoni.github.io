@@ -21,7 +21,6 @@
 			import { MTLLoader } from './js/loaders/MTLLoader.js';
 			import { OBJLoader } from './js/loaders/OBJLoader.js';
 			import { WEBVR } from './js/vr/WebVR.js';
-			import { DeviceOrientationControls } from './js/controls/DeviceOrientationControls.js';
 
 			document.documentElement.style.overflow = 'hidden';  
     		document.body.scroll = "no";
@@ -43,7 +42,6 @@
 			var gridXZ, geometry, material, floor;
 			var ambientLight, pointLight;
 			var timer;
-			var controls;
 
 			const m1_R = (-1.0 / 3.5);
 			const mL_R = (-12.50 / 3.5);
@@ -80,9 +78,6 @@
 
 				helper = new THREE.CameraHelper(fpCamera);
 				scene.add(helper);
-
-				//controls
-				controls = new DeviceOrientationControls( firstPerson );
 
 				//floor
 				gridXZ = new THREE.GridHelper(10000, 250, new THREE.Color(0xff0000), new THREE.Color(0x00ff00) );
@@ -271,7 +266,6 @@
 				} catch(e) {
 					return;
 				}
-				controls.update();
 				renderer.render( scene, fpCamera );
 			}
 			
