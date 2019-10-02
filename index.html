@@ -20,8 +20,8 @@
 			import { DDSLoader } from './js/loaders/DDSLoader.js';
 			import { MTLLoader } from './js/loaders/MTLLoader.js';
 			import { OBJLoader } from './js/loaders/OBJLoader.js';
-			import { OrbitControls } from './js/controls/OrbitControls.js';
 			import { WEBVR } from './js/vr/WebVR.js';
+			import { DeviceOrientationControls } from './js/controls/DeviceOrientationControls.js';
 
 			document.documentElement.style.overflow = 'hidden';  
     		document.body.scroll = "no";
@@ -33,7 +33,7 @@
 			}
 			
 			var container;
-			var activeCamera, fpCamera, tpCamera, controlsCamera, scene, controls, helper;
+			var activeCamera, fpCamera, tpCamera, scene, helper;
 			var firstPerson, thirdPerson;
 			var virhas, virhas_body, virhas_wheel0, virhas_wheel1, virhas_wheel2, virhas_pan, virhas_tilt, virhas_pantilt;
 			var rotWorldMatrix;
@@ -43,6 +43,7 @@
 			var gridXZ, geometry, material, floor;
 			var ambientLight, pointLight;
 			var timer;
+			var controls;
 
 			const m1_R = (-1.0 / 3.5);
 			const mL_R = (-12.50 / 3.5);
@@ -58,8 +59,6 @@
 
 				fpCamera = new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 1, 3000 );
 				tpCamera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 3000 );
-				controlsCamera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 3000 );
-				//setActiveCamera(fpCamera);
 
 				// scene
 
@@ -71,8 +70,6 @@
 				pointLight = new THREE.PointLight( 0xffffff, 0.8 );
 				fpCamera.add( pointLight );
 				tpCamera.add( pointLight.clone() );
-				//controlsCamera.add( pointLight.clone() );
-				scene.add( controlsCamera );
 
 				firstPerson = new THREE.Group();
 				firstPerson.position.set(0, 0, 0);
@@ -83,6 +80,9 @@
 
 				helper = new THREE.CameraHelper(fpCamera);
 				scene.add(helper);
+
+				//controls
+				controls = new DeviceOrientationControls( firstPerson );
 
 				//floor
 				gridXZ = new THREE.GridHelper(10000, 250, new THREE.Color(0xff0000), new THREE.Color(0x00ff00) );
@@ -236,30 +236,12 @@
 				renderer.vr.enabled = true;
 				document.body.appendChild( renderer.domElement );
 
-				//
-
 				document.body.appendChild( WEBVR.createButton( renderer ) );
 
 
 				//timer
 				timer = new THREE.Clock();
 
-
-				//controls
-				controls = new OrbitControls( controlsCamera, renderer.domElement );
-
-				controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-				controls.enableZoom = true;
-				controls.dampingFactor = 0.05;
-
-				controls.screenSpacePanning = false;
-
-				controls.minDistance = 0;
-				controls.maxDistance = Infinity;
-
-				controls.maxPolarAngle = Math.PI / 2;
-
-				controlsCamera.position.y = 400;
 				window.addEventListener( 'resize', onWindowResize, false );
 			}
 
@@ -269,9 +251,6 @@
 
 			    tpCamera.aspect = window.innerWidth / window.innerHeight;
 			    tpCamera.updateProjectionMatrix();
-
-			    controlsCamera.aspect = window.innerWidth / window.innerHeight;
-			    controlsCamera.updateProjectionMatrix();
 
 			    renderer.setSize( window.innerWidth, window.innerHeight );
 			}
@@ -292,7 +271,6 @@
 				} catch(e) {
 					return;
 				}
-				controls.update();
 				renderer.render( scene, tpCamera );
 			}
 			
@@ -416,15 +394,6 @@
 				isPanDecreasing = virhas_pantilt.rotation.y>0 ? true : false;
 				isTiltDecreasing = virhas_tilt.rotation.x<-Math.PI/2 ? true : false;
 			}
-
-			/*function setActiveCamera(camera) {
-				var cams = [fpCamera, tpCamera, controlsCamera];
-				cams.forEach(function(element) {
-				  if(camera==element) {
-				  	element.se
-				  }
-				});
-			}*/
 
 		</script>
 	</body>
