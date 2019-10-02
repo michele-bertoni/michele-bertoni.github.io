@@ -92,9 +92,9 @@ var DeviceOrientationControls = function ( object ) {
 
 		if ( device ) {
 
-			var alpha = 0;//device.alpha ? _Math.degToRad( -device.alpha ) + scope.alphaOffset : 0; // Z
+			var alpha = -Math.PI/2;//device.alpha ? _Math.degToRad( -device.alpha ) + scope.alphaOffset : 0; // Z
 
-			var beta = -Math.PI/2;//device.beta ? _Math.degToRad( device.beta ) : 0; // X'
+			var beta = Math.PI/2;//device.beta ? _Math.degToRad( device.beta ) : 0; // X'
 
 			var gamma = 0;//device.gamma ? _Math.degToRad( device.gamma ) : 0; // Y''
 
