@@ -469,7 +469,7 @@
 
 			function handleGamepad() {
 				var gamepad = navigator.getGamepads()[0];
-				if(gamepad===undefined || gamepad===null || !gamepad.connected) {
+				if(gamepad==null || !gamepad.connected) {
 					speedStrafe = 0.00;
 					speedForward = 0.00;
 					speedAngular = 0.00;
