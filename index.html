@@ -32,9 +32,9 @@
 			}
 			
 			var container;
-			var activeCamera=0, camera, scene, helper;
-			var airlab, airlabTexture;
-			var firstPerson, thirdPerson;
+			var activeCamera=2, camera, scene, helper;
+			var airlab, airlabTexture, arenaNX, arenaNZ, arenaPX, arenaPZ;
+			var firstPerson, thirdPerson, outSideArena;
 			var virhas, virhas_body, virhas_wheel0, virhas_wheel1, virhas_wheel2, virhas_pan, virhas_tilt, virhas_pantilt;
 			var rotWorldMatrix;
 			var speed0, speed1, speed2, speedPan, speedTilt, speedStrafe, speedForward, speedAngular;
@@ -62,21 +62,18 @@
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
-				camera = [	new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 1, 5000 ),
+				camera = [	new THREE.PerspectiveCamera( 80, window.innerWidth / window.innerHeight, 1, 5000 ),
+							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 5000 ),
 							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 5000 ) ];
 
 				// scene
 
 				scene = new THREE.Scene();
+				//scene.background = new THREE.CubeTextureLoader() .setPath( 'models/airlab/' ) .load( [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png' ] );
 
-				let path = 'models/airlab/';
-				let format = '.png';
-				let urls = [
-				  path + 'px' + format, path + 'nx' + format,
-				  path + 'py' + format, path + 'ny' + format,
-				  path + 'pz' + format, path + 'nz' + format
-				];
-				airlabTexture = THREE.ImageUtils.loadTextureCube(urls, THREE.CubeRefractionMapping);
+				//airlab scene
+				{
+				airlabTexture = new THREE.CubeTextureLoader() .setPath( 'models/airlab/' ) .load( [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png' ] );
 				let airlabShader = THREE.ShaderLib.cube;
 				airlabShader.uniforms.tCube.value = airlabTexture;
 
@@ -90,12 +87,34 @@
 
 				  }),
 
-				airlab = new THREE.Mesh(new THREE.BoxGeometry(4000, 4000, 4000), airlabMaterial);
+				airlab = new THREE.Mesh(new THREE.BoxGeometry(6000, 6000, 6000), airlabMaterial);
 				airlab.position.x = 0; 
-				airlab.position.y = 600;
+				airlab.position.y = 550;
 				airlab.position.z = 0;
 				scene.add(airlab);
-				
+
+				let planeGeometry = new THREE.PlaneGeometry( 4000, 615, 1, 1 );
+				arenaPZ = new THREE.Mesh( planeGeometry, new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( 'models/airlab/arena.png' ) } ) );
+				arenaPZ.material.side = THREE.DoubleSide;
+				arenaNZ = arenaPZ.clone();
+				arenaNX = arenaPZ.clone();
+				arenaPX = arenaPZ.clone();
+				arenaPZ.position.z = 2000;
+				arenaNZ.position.z = -2000;
+				arenaNZ.rotation.y = Math.PI;
+				arenaPX.rotation.y = Math.PI/2;
+				arenaNX.rotation.y = -Math.PI/2;				
+				arenaPX.position.x = 2000;
+				arenaNX.position.x = -2000;
+				arenaPX.position.y = 615/2;
+				arenaNX.position.y = 615/2;
+				arenaPZ.position.y = 615/2;
+				arenaNZ.position.y = 615/2;
+				scene.add( arenaPZ );
+				scene.add( arenaNZ );
+				scene.add( arenaPX );
+				scene.add( arenaNX );
+				}
 
 				ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
 				scene.add( ambientLight );
@@ -110,6 +129,13 @@
 				thirdPerson = new THREE.Group();
 				thirdPerson.position.set(0, 0, 0);
 				thirdPerson.add(camera[1]);
+				outSideArena = new THREE.Group();
+				outSideArena.position.x = -2000;
+				outSideArena.position.y = 700;
+				outSideArena.position.z = 1500;
+				outSideArena.add(camera[2]);
+				camera[2].lookAt(new THREE.Vector3(0, 0, 0));
+				scene.add(outSideArena);
 
 				//helper
 				helper = new THREE.CameraHelper(camera[0]);
@@ -130,13 +156,14 @@
 				//floor
 				gridXZ = new THREE.GridHelper(10000, 250, new THREE.Color(0xff0000), new THREE.Color(0x00ff00) );
 			    //scene.add(gridXZ);
-
-			    let planeGeometry = new THREE.PlaneGeometry( 4000, 4000, 1, 1 );
-				let planeMaterial = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( 'models/airlab/ny.png' ) } );
-				floor = new THREE.Mesh( planeGeometry, planeMaterial );
-				floor.material.side = THREE.DoubleSide;
-				floor.rotation.x = Math.PI/2;
-				scene.add( floor ); 
+			    {
+				    let planeGeometry = new THREE.PlaneGeometry( 4000, 4000, 1, 1 );
+					let planeMaterial = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( 'models/airlab/ny.png' ) } );
+					floor = new THREE.Mesh( planeGeometry, planeMaterial );
+					floor.material.side = THREE.DoubleSide;
+					floor.rotation.x = Math.PI/2;
+					scene.add( floor ); 
+				}
 
 				//model loader
 				virhas = new THREE.Group();
@@ -446,7 +473,6 @@
 				}
 				var turbo = gamepad.buttons[0].pressed ? 1.0 : 0.5;
 				var accelerator = gamepad.buttons[7].value - gamepad.buttons[6].value;
-				console.log(accelerator);
 				speedStrafe = Math.abs(gamepad.axes[0]) >= 0.09 ? gamepad.axes[0]*accelerator*turbo : 0.00;
 				speedForward = Math.abs(gamepad.axes[1]) >= 0.09 ? -gamepad.axes[1]*accelerator*turbo : 0.00;
 				speedAngular = (gamepad.buttons[5].value - gamepad.buttons[4].value)*turbo;
@@ -467,16 +493,16 @@
 					isOutOfBound = false;
 					gamepad.vibrationActuator.playEffect("dual-rumble", {
 					  startDelay: 0,
-					  duration: 1000,
-					  weakMagnitude: 1.0,
-					  strongMagnitude: 1.0
+					  duration: 300,
+					  weakMagnitude: 0.8,
+					  strongMagnitude: 0.7
 					});
 				}
 
 			}
 
 			function switchCamera() {
-				activeCamera = (activeCamera+1)%2;
+				activeCamera = (activeCamera+1)%3;
 				switchedCamera = true;
 			}
 
