@@ -38,7 +38,7 @@
 			var virhas, virhas_body, virhas_wheel0, virhas_wheel1, virhas_wheel2, virhas_pan, virhas_tilt, virhas_pantilt;
 			var rotWorldMatrix;
 			var speed0, speed1, speed2, speedPan, speedTilt, speedStrafe, speedForward, speedAngular;
-			var isPanReset=false, isTiltReset=false, isPanDecreasing=false, isTiltDecreasing=false;
+			var isPanReset=false, isTiltReset=false, isPanDecreasing=false, isTiltDecreasing=false, isOutOfBound=false;
 			var canvas, context, renderer;
 			var gridXZ, floor;
 			var ambientLight, pointLight;
@@ -365,6 +365,11 @@
 				virhas.position.x-=delta_y*10;
 				virhas.position.z-=delta_x*10;
 				virhas.rotation.y+=delta_th;
+
+				if(virhas.position.x < -1800) { virhas.position.x = -1800; isOutOfBound=true; }
+				else if(virhas.position.x > 1800) { virhas.position.x = 1800; isOutOfBound=true; }
+				if(virhas.position.z < -1800) { virhas.position.z = -1800; isOutOfBound=true; }
+				else if(virhas.position.z > 1800) { virhas.position.z = 1800; isOutOfBound=true; }
 			}
 
 			function rotatePanTilt(speedpan, speedtilt, deltaT) {
@@ -457,6 +462,15 @@
 					switchCamera();
 				} else if(!gamepad.buttons[8].pressed) {
 					switchedCamera = false;
+				}
+				if(isOutOfBound) {
+					isOutOfBound = false;
+					gamepad.vibrationActuator.playEffect("dual-rumble", {
+					  startDelay: 0,
+					  duration: 1000,
+					  weakMagnitude: 1.0,
+					  strongMagnitude: 1.0
+					});
 				}
 
 			}
