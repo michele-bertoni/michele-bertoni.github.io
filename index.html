@@ -131,10 +131,11 @@
 				firstPerson.position.set(0, 0, 0);
 				firstPerson.add(camera[0]);
 				thirdPerson = new THREE.Group();
-				thirdPerson.position.set(-2000, 0, 2000);
+				thirdPerson.position.set(0, 0, 0);
 				thirdPerson.add(camera[1]);
 				outSideArena = new THREE.Group();
 				outSideArena.add(camera[2]);
+				camera[2].position.set(-2000, 650, 2000);
 				camera[2].lookAt(new THREE.Vector3(0, 0, 0));
 				scene.add(outSideArena);
 
