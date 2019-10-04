@@ -33,13 +33,14 @@
 			
 			var container;
 			var activeCamera=0, camera, scene, helper;
+			var airlab, airlabTexture;
 			var firstPerson, thirdPerson;
 			var virhas, virhas_body, virhas_wheel0, virhas_wheel1, virhas_wheel2, virhas_pan, virhas_tilt, virhas_pantilt;
 			var rotWorldMatrix;
 			var speed0, speed1, speed2, speedPan, speedTilt, speedStrafe, speedForward, speedAngular;
 			var isPanReset=false, isTiltReset=false, isPanDecreasing=false, isTiltDecreasing=false;
 			var canvas, context, renderer;
-			var gridXZ, geometry, material, floor;
+			var gridXZ, floor;
 			var ambientLight, pointLight;
 			var timer, switchedCamera=false;
 
@@ -67,16 +68,34 @@
 				// scene
 
 				scene = new THREE.Scene();
-				scene.background = new THREE.CubeTextureLoader()
-					.setPath( 'models/airlab/' )
-					.load( [
-						'px.png',
-						'nx.png',
-						'py.png',
-						'ny.png',
-						'pz.png',
-						'nz.png'
-					] );
+
+				let path = 'models/airlab/';
+				let format = '.png';
+				let urls = [
+				  path + 'px' + format, path + 'nx' + format,
+				  path + 'py' + format, path + 'ny' + format,
+				  path + 'pz' + format, path + 'nz' + format
+				];
+				airlabTexture = THREE.ImageUtils.loadTextureCube(urls, THREE.CubeRefractionMapping);
+				let airlabShader = THREE.ShaderLib.cube;
+				airlabShader.uniforms.tCube.value = airlabTexture;
+
+				let airlabMaterial = new THREE.ShaderMaterial({
+
+				    fragmentShader: airlabShader.fragmentShader,
+				    vertexShader: airlabShader.vertexShader,
+				    uniforms: airlabShader.uniforms,
+				    depthWrite: false,
+				    side: THREE.BackSide
+
+				  }),
+
+				airlab = new THREE.Mesh(new THREE.BoxGeometry(4000, 4000, 4000), airlabMaterial);
+				airlab.position.x = 0; 
+				airlab.position.y = 600;
+				airlab.position.z = 0;
+				scene.add(airlab);
+				
 
 				ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
 				scene.add( ambientLight );
@@ -94,7 +113,7 @@
 
 				//helper
 				helper = new THREE.CameraHelper(camera[0]);
-				scene.add(helper);
+				//scene.add(helper);
 
 				//gamepad
 				window.addEventListener("gamepadconnected", (event) => {
@@ -110,14 +129,14 @@
 
 				//floor
 				gridXZ = new THREE.GridHelper(10000, 250, new THREE.Color(0xff0000), new THREE.Color(0x00ff00) );
-			    scene.add(gridXZ);
+			    //scene.add(gridXZ);
 
-			    geometry = new THREE.PlaneGeometry( 10000, 10000, 1, 1 );
-				material = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
-				floor = new THREE.Mesh( geometry, material );
+			    let planeGeometry = new THREE.PlaneGeometry( 4000, 4000, 1, 1 );
+				let planeMaterial = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( 'models/airlab/ny.png' ) } );
+				floor = new THREE.Mesh( planeGeometry, planeMaterial );
 				floor.material.side = THREE.DoubleSide;
 				floor.rotation.x = Math.PI/2;
-				//scene.add( floor ); 
+				scene.add( floor ); 
 
 				//model loader
 				virhas = new THREE.Group();
