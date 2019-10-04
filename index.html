@@ -33,7 +33,7 @@
 			
 			var container;
 			var activeCamera=2, camera, scene, helper;
-			var airlab, airlabTexture, arenaNX, arenaNZ, arenaPX, arenaPZ;
+			var airlab, airlabTexture, airlabShader, airlabMaterial, arenaNX, arenaNZ, arenaPX, arenaPZ;
 			var firstPerson, thirdPerson, outSideArena;
 			var virhas, virhas_body, virhas_wheel0, virhas_wheel1, virhas_wheel2, virhas_pan, virhas_tilt, virhas_pantilt;
 			var rotWorldMatrix;
@@ -72,12 +72,12 @@
 				//scene.background = new THREE.CubeTextureLoader() .setPath( 'models/airlab/' ) .load( [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png' ] );
 
 				//airlab scene
-				{
+				
 				airlabTexture = new THREE.CubeTextureLoader() .setPath( 'models/airlab/' ) .load( [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png' ] );
-				let airlabShader = THREE.ShaderLib.cube;
+				airlabShader = THREE.ShaderLib.cube;
 				airlabShader.uniforms.tCube.value = airlabTexture;
 
-				let airlabMaterial = new THREE.ShaderMaterial({
+				airlabMaterial = new THREE.ShaderMaterial({
 
 				    fragmentShader: airlabShader.fragmentShader,
 				    vertexShader: airlabShader.vertexShader,
@@ -89,7 +89,7 @@
 
 				airlab = new THREE.Mesh(new THREE.BoxGeometry(6000, 6000, 6000), airlabMaterial);
 				airlab.position.x = 0; 
-				airlab.position.y = 550;
+				airlab.position.y = 400;
 				airlab.position.z = 0;
 				scene.add(airlab);
 
@@ -102,8 +102,8 @@
 				arenaPZ.position.z = 2000;
 				arenaNZ.position.z = -2000;
 				arenaNZ.rotation.y = Math.PI;
-				arenaPX.rotation.y = Math.PI/2;
-				arenaNX.rotation.y = -Math.PI/2;				
+				arenaPX.rotation.y = -Math.PI/2;
+				arenaNX.rotation.y = Math.PI/2;				
 				arenaPX.position.x = 2000;
 				arenaNX.position.x = -2000;
 				arenaPX.position.y = 615/2;
@@ -114,7 +114,7 @@
 				scene.add( arenaNZ );
 				scene.add( arenaPX );
 				scene.add( arenaNX );
-				}
+				
 
 				ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
 				scene.add( ambientLight );
@@ -521,6 +521,11 @@
 			function switchCamera() {
 				pointLight[activeCamera].intensity = 0.0;
 				activeCamera = (activeCamera+1)%3;
+				try {
+					if(activeCamera===0) airlab.position.y = 550;
+					else if (activeCamera===1) airlab.position.y = 650;
+					else airlab.position.y = 400;
+				} catch(e) {}
 				pointLight[activeCamera].intensity = 0.8;
 				switchedCamera = true;
 			}
