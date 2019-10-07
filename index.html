@@ -62,9 +62,9 @@
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
-				camera = [	new THREE.PerspectiveCamera( 85, window.innerWidth / window.innerHeight, 1, 5000 ),
-							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 ),
-							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1200 ) ];
+				camera = [	new THREE.PerspectiveCamera( 85, window.innerWidth / window.innerHeight, 1, 500 ),
+							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 ),
+							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 ) ];
 
 				// scene
 
@@ -87,28 +87,28 @@
 
 				  }),
 
-				airlab = new THREE.Mesh(new THREE.BoxGeometry(600, 600, 600), airlabMaterial);
+				airlab = new THREE.Mesh(new THREE.BoxGeometry(60, 60, 60), airlabMaterial);
 				airlab.position.x = 0; 
-				airlab.position.y = 40;
+				airlab.position.y = 4;
 				airlab.position.z = 0;
 
-				let planeGeometry = new THREE.PlaneGeometry( 400, 61.5, 1, 1 );
+				let planeGeometry = new THREE.PlaneGeometry( 40, 6.15, 1, 1 );
 				arenaPZ = new THREE.Mesh( planeGeometry, new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( 'models/airlab/arena.png' ) } ) );
 				arenaPZ.material.side = THREE.DoubleSide;
 				arenaNZ = arenaPZ.clone();
 				arenaNX = arenaPZ.clone();
 				arenaPX = arenaPZ.clone();
-				arenaPZ.position.z = 200;
-				arenaNZ.position.z = -200;
+				arenaPZ.position.z = 20;
+				arenaNZ.position.z = -20;
 				arenaNZ.rotation.y = Math.PI;
 				arenaPX.rotation.y = -Math.PI/2;
 				arenaNX.rotation.y = Math.PI/2;				
-				arenaPX.position.x = 200;
-				arenaNX.position.x = -200;
-				arenaPX.position.y = 61.5/2;
-				arenaNX.position.y = 61.5/2;
-				arenaPZ.position.y = 61.5/2;
-				arenaNZ.position.y = 61.5/2;
+				arenaPX.position.x = 20;
+				arenaNX.position.x = -20;
+				arenaPX.position.y = 6.15/2;
+				arenaNX.position.y = 6.15/2;
+				arenaPZ.position.y = 6.15/2;
+				arenaNZ.position.y = 6.15/2;
 				scene.add( arenaPZ );
 				scene.add( arenaNZ );
 				scene.add( arenaPX );
@@ -135,8 +135,8 @@
 				thirdPerson.add(camera[1]);
 				outSideArena = new THREE.Group();
 				outSideArena.add(camera[2]);
-				outSideArena.position.y = 65;
-				camera[2].position.set(-200, 0, 200);
+				outSideArena.position.y = 6.5;
+				camera[2].position.set(-20, 0, 20);
 				camera[2].lookAt(new THREE.Vector3(0, 0, 0));
 				scene.add(outSideArena);
 
@@ -157,10 +157,10 @@
 
 
 				//floor
-				gridXZ = new THREE.GridHelper(1000, 250, new THREE.Color(0xff0000), new THREE.Color(0x00ff00) );
+				gridXZ = new THREE.GridHelper(100, 250, new THREE.Color(0xff0000), new THREE.Color(0x00ff00) );
 			    //scene.add(gridXZ);
 			    {
-				    let planeGeometry = new THREE.PlaneGeometry( 500, 500, 1, 1 );
+				    let planeGeometry = new THREE.PlaneGeometry( 50, 50, 1, 1 );
 					let planeMaterial = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( 'models/airlab/ny.png' ) } );
 					floor = new THREE.Mesh( planeGeometry, planeMaterial );
 					floor.material.side = THREE.DoubleSide;
@@ -197,16 +197,16 @@
 							.setPath( 'models/virhas/' )
 							.load( 'virhas_body.obj', function ( object ) {
 
-								object.scale.x = 0.1; object.scale.y = 0.1; object.scale.z = 0.1;
-								object.position.y = 3.416;
+								object.scale.x = 0.01; object.scale.y = 0.01; object.scale.z = 0.01;
+								object.position.y = 0.3416;
 								object.rotation.z = Math.PI;
 								object.rotation.x = -Math.PI/2;
 								virhas_body = object;
 								virhas.add( virhas_body );
-								thirdPerson.position.y = 40;
-								thirdPerson.position.z = 30;
-								camera[1].position.z = 30;
-								camera[1].lookAt(new THREE.Vector3(0, 22, 12.5));
+								thirdPerson.position.y = 4;
+								thirdPerson.position.z = 3;
+								camera[1].position.z = 3;
+								camera[1].lookAt(new THREE.Vector3(0, 2.2, 1.25));
 								virhas.add( thirdPerson );
 
 							}, onProgress, onError );
@@ -224,8 +224,8 @@
 							.setPath( 'models/virhas/' )
 							.load( 'virhas_wheel.obj', function ( object ) {
 
-								object.scale.x = 0.1; object.scale.y = 0.1; object.scale.z = 0.1;
-								object.position.y = 3.416;
+								object.scale.x = 0.01; object.scale.y = 0.01; object.scale.z = 0.01;
+								object.position.y = 0.3416;
 								//object.rotation.z = Math.PI;
 								//object.rotation.x = -Math.PI/2;
 								rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI);
@@ -262,8 +262,8 @@
 							.setPath( 'models/virhas/' )
 							.load( 'virhas_pan.obj', function ( object ) {
 
-								object.scale.x = 0.1; object.scale.y = 0.1; object.scale.z = 0.1;
-								object.position.y = 21.05+3.416;
+								object.scale.x = 0.01; object.scale.y = 0.01; object.scale.z = 0.01;
+								object.position.y = 2.105+0.3416;
 								rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI);
 								rotateAroundWorldAxis(object, new THREE.Vector3(1, 0, 0), -Math.PI/2);
 								virhas_pan = object;
@@ -284,20 +284,19 @@
 							.setPath( 'models/virhas/' )
 							.load( 'virhas_tilt.obj', function ( object ) {
 
-								object.scale.x = 0.1; object.scale.y = 0.1; object.scale.z = 0.1;
-								object.position.y = 21.05+3.416;
-								object.position.z = -4.13;
+								object.scale.x = 0.01; object.scale.y = 0.01; object.scale.z = 0.01;
+								object.position.y = 2.105+0.3416;
+								object.position.z = -0.413;
 								rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI);
 								rotateAroundWorldAxis(object, new THREE.Vector3(1, 0, 0), -Math.PI/2);
 								virhas_tilt = object;
-								camera[0].position.z = 100;
 								firstPerson.rotation.x = -Math.PI/2;
 								firstPerson.rotation.z = Math.PI;
-								firstPerson.position.z = 40;
-								firstPerson.position.y = -128.4;
+								firstPerson.position.z = 4.0;
+								firstPerson.position.y = -2.84;
 								virhas_tilt.add(firstPerson);
 								virhas_pantilt.add( virhas_tilt );
-								virhas_pantilt.position.z = -6.5;
+								virhas_pantilt.position.z = -0.65;
 								virhas.add(virhas_pantilt);
 
 							}, onProgress, onError );
@@ -399,14 +398,14 @@
      			var delta_y = (speedX * Math.sin(virhas.rotation.y) + speedY * Math.cos(virhas.rotation.y)) * deltaT;
      			var delta_th = speedTh * deltaT;
 
-				virhas.position.x-=delta_y;
-				virhas.position.z-=delta_x;
+				virhas.position.x-=delta_y/10;
+				virhas.position.z-=delta_x/10;
 				virhas.rotation.y+=delta_th;
 
-				if(virhas.position.x < -180) { virhas.position.x = -180; isOutOfBound=true; }
-				else if(virhas.position.x > 180) { virhas.position.x = 180; isOutOfBound=true; }
-				if(virhas.position.z < -180) { virhas.position.z = -180; isOutOfBound=true; }
-				else if(virhas.position.z > 180) { virhas.position.z = 180; isOutOfBound=true; }
+				if(virhas.position.x < -18) { virhas.position.x = -18; isOutOfBound=true; }
+				else if(virhas.position.x > 18) { virhas.position.x = 18; isOutOfBound=true; }
+				if(virhas.position.z < -18) { virhas.position.z = -18; isOutOfBound=true; }
+				else if(virhas.position.z > 18) { virhas.position.z = 18; isOutOfBound=true; }
 			}
 
 			function rotatePanTilt(speedpan, speedtilt, deltaT) {
@@ -527,9 +526,9 @@
 				pointLight[activeCamera].intensity = 0.0;
 				activeCamera = (activeCamera+1)%3;
 				try {
-					if(activeCamera===0) airlab.position.y = 55;
-					else if (activeCamera===1) airlab.position.y = 55;
-					else airlab.position.y = 40;
+					if(activeCamera===0) airlab.position.y = 5.5;
+					else if (activeCamera===1) airlab.position.y = 5.5;
+					else airlab.position.y = 4;
 				} catch(e) {}
 				pointLight[activeCamera].intensity = 0.8;
 				switchedCamera = true;
