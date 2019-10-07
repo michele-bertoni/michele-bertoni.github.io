@@ -497,12 +497,14 @@
 				}
 				if(isOutOfBound) {
 					isOutOfBound = false;
-					gamepad.vibrationActuator.playEffect("dual-rumble", {
-					  startDelay: 0,
-					  duration: 300,
-					  weakMagnitude: 0.8,
-					  strongMagnitude: 0.7
-					});
+					try{
+						gamepad.vibrationActuator.playEffect("dual-rumble", {
+						  startDelay: 0,
+						  duration: 300,
+						  weakMagnitude: 0.8,
+						  strongMagnitude: 0.7
+						});
+					} catch(e) { }
 				}
 				if(activeCamera===2 && gamepad.buttons[3].pressed && !movedCamera) {
 					movedCamera = true;
