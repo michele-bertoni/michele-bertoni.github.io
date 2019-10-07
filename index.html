@@ -284,21 +284,22 @@
 							.setPath( 'models/virhas/' )
 							.load( 'virhas_tilt.obj', function ( object ) {
 
+								object.up.y=0; object.up.z=1;
 								object.scale.x = 0.01; object.scale.y = 0.01; object.scale.z = 0.01;
 								object.position.y = 2.105+0.3416;
 								object.position.z = -0.413;
-								rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI);
-								rotateAroundWorldAxis(object, new THREE.Vector3(1, 0, 0), -Math.PI/2);
+								//rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI);
+								//rotateAroundWorldAxis(object, new THREE.Vector3(1, 0, 0), -Math.PI/2);
 								virhas_tilt = object;
 								virhas_tilt.add(firstPerson);
 								//firstPerson.rotation.x = -Math.PI/2;
 								//firstPerson.rotation.z = Math.PI;
-								firstPerson.position.y = -28.4;
-								firstPerson.position.z = 40;
+								firstPerson.position.z = -28.4;
+								firstPerson.position.y = 40;
 								virhas_pantilt.add( virhas_tilt );
 								virhas_pantilt.position.z = -0.65;
 								virhas.add(virhas_pantilt);
-								camera[0].lookAt(new THREE.Vector3(0, camera[0].getWorldPosition.y, -200));
+								//firstPerson.lookAt(new THREE.Vector3(0, camera[0].getWorldPosition.y, -200));
 
 
 							}, onProgress, onError );
