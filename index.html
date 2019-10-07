@@ -62,7 +62,7 @@
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
-				camera = [	new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 50000 ),
+				camera = [	new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 500 ),
 							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 ),
 							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 ) ];
 
@@ -89,7 +89,7 @@
 
 				airlab = new THREE.Mesh(new THREE.BoxGeometry(60, 60, 60), airlabMaterial);
 				airlab.position.x = 0; 
-				airlab.position.y = 4;
+				airlab.position.y = 5.5;
 				airlab.position.z = 0;
 
 				let planeGeometry = new THREE.PlaneGeometry( 40, 6.15, 1, 1 );
@@ -136,7 +136,7 @@
 				outSideArena = new THREE.Group();
 				outSideArena.add(camera[2]);
 				outSideArena.position.y = 6.5;
-				camera[0].position.set(0, 3, 0);
+				camera[0].position.set(0, 1.5, 0);
 				camera[2].position.set(-20, 0, 20);
 				camera[2].lookAt(new THREE.Vector3(0, 0, 0));
 				scene.add(outSideArena);
@@ -295,7 +295,7 @@
 								virhas_pantilt.add( virhas_tilt );
 								virhas.add(virhas_pantilt);
 								virhas_pantilt.position.z = -0.65;
-								firstPerson.position.y = -3+0.4;
+								firstPerson.position.y = -1.5+0.4;
 								firstPerson.position.z = -0.284;
 								virhas_tilt.add( firstPerson );
 
