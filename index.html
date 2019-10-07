@@ -138,7 +138,7 @@
 				outSideArena = new THREE.Group();
 				outSideArena.add(camera[2]);
 				outSideArena.position.y = 6.5-1.5;
-				camera[0].position.set(0, 1.5, 0.15);
+				camera[0].position.set(0, 1.5, 0.2);
 				camera[1].position.set(0, 1.5, 0);
 				camera[2].position.set(-20, 1.5, 20);
 				camera[2].lookAt(new THREE.Vector3(0, 0, 0));
@@ -146,7 +146,7 @@
 
 				//helper
 				helper = new THREE.CameraHelper(camera[0]);
-				scene.add(helper);
+				//scene.add(helper);
 
 				//gamepad
 				window.addEventListener("gamepadconnected", (event) => {
@@ -300,7 +300,7 @@
 								virhas.add(virhas_pantilt);
 								virhas_pantilt.position.z = -0.65;
 								firstPerson.position.y = -1.5+0.4;
-								firstPerson.position.z = -0.284-0.15;
+								firstPerson.position.z = -0.284-0.2;
 								virhas_tilt.add( firstPerson );
 
 							}, onProgress, onError );
