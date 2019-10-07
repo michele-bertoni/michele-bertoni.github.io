@@ -135,15 +135,16 @@
 				thirdPerson.add(camera[1]);
 				outSideArena = new THREE.Group();
 				outSideArena.add(camera[2]);
-				outSideArena.position.y = 6.5;
-				camera[0].position.set(0, 1.5, 0);
-				camera[2].position.set(-20, 0, 20);
+				outSideArena.position.y = 6.5-1.5;
+				camera[0].position.set(0, 1.5, 0.3);
+				camera[1].position.set(0, 1.5, 0);
+				camera[2].position.set(-20, 1.5, 20);
 				camera[2].lookAt(new THREE.Vector3(0, 0, 0));
 				scene.add(outSideArena);
 
 				//helper
 				helper = new THREE.CameraHelper(camera[0]);
-				scene.add(helper);
+				//scene.add(helper);
 
 				//gamepad
 				window.addEventListener("gamepadconnected", (event) => {
@@ -205,7 +206,7 @@
 								object.rotation.x = -Math.PI/2;
 								virhas_body = object;
 								virhas.add( virhas_body );
-								thirdPerson.position.y = 4;
+								thirdPerson.position.y = 4-1.5;
 								thirdPerson.position.z = 3;
 								camera[1].position.z = 3;
 								camera[1].lookAt(new THREE.Vector3(0, 2.2, 1.25));
@@ -296,7 +297,7 @@
 								virhas.add(virhas_pantilt);
 								virhas_pantilt.position.z = -0.65;
 								firstPerson.position.y = -1.5+0.4;
-								firstPerson.position.z = -0.284;
+								firstPerson.position.z = -0.284-0.3;
 								virhas_tilt.add( firstPerson );
 
 							}, onProgress, onError );
@@ -324,6 +325,7 @@
 			function onWindowResize(){
 			    camera[0].aspect = window.innerWidth / window.innerHeight;
 			    camera[0].updateProjectionMatrix();
+			    helper = new THREE.CameraHelper(camera[0]);
 
 			    camera[1].aspect = window.innerWidth / window.innerHeight;
 			    camera[1].updateProjectionMatrix();
