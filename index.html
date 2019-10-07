@@ -62,7 +62,7 @@
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
-				camera = [	new THREE.PerspectiveCamera( 85, window.innerWidth / window.innerHeight, 1, 500 ),
+				camera = [	new THREE.PerspectiveCamera( 85, window.innerWidth / window.innerHeight, 10, 5000 ),
 							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 ),
 							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 ) ];
 
@@ -292,8 +292,8 @@
 								virhas_tilt = object;
 								firstPerson.rotation.x = -Math.PI/2;
 								firstPerson.rotation.z = Math.PI;
-								firstPerson.position.z = 4.0;
-								firstPerson.position.y = -2.84;
+								firstPerson.position.z = 40;
+								firstPerson.position.y = -28.4;
 								virhas_tilt.add(firstPerson);
 								virhas_pantilt.add( virhas_tilt );
 								virhas_pantilt.position.z = -0.65;
