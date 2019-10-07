@@ -91,6 +91,7 @@
 				airlab.position.x = 0; 
 				airlab.position.y = 400;
 				airlab.position.z = 0;
+				//scene.add(airlab);
 
 				let planeGeometry = new THREE.PlaneGeometry( 4000, 615, 1, 1 );
 				arenaPZ = new THREE.Mesh( planeGeometry, new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( 'models/airlab/arena.png' ) } ) );
@@ -113,7 +114,6 @@
 				scene.add( arenaNZ );
 				scene.add( arenaPX );
 				scene.add( arenaNX );
-				scene.add(airlab);
 				
 
 				ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
