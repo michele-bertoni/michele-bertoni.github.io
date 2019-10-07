@@ -62,9 +62,9 @@
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
-				camera = [	new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 500 ),
-							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 500 ),
-							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 600 ) ];
+				camera = [	new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 ),
+							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 ),
+							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1200 ) ];
 
 				// scene
 
@@ -290,11 +290,11 @@
 								rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI);
 								rotateAroundWorldAxis(object, new THREE.Vector3(1, 0, 0), -Math.PI/2);
 								virhas_tilt = object;
-								camera[0].position.z = 1.6;
+								camera[0].position.z = 8.6;
 								firstPerson.rotation.x = -Math.PI/2;
 								firstPerson.rotation.z = Math.PI;
 								firstPerson.position.z = 40;
-								firstPerson.position.y = -30;
+								firstPerson.position.y = -37;
 								virhas_tilt.add(firstPerson);
 								virhas_pantilt.add( virhas_tilt );
 								virhas_pantilt.position.z = -6.5;
