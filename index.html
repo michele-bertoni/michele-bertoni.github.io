@@ -119,9 +119,9 @@
 				ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
 				scene.add( ambientLight );
 
-				pointLight = [ 	new THREE.PointLight( 0xffffff, 0.0 ), 
+				pointLight = [ 	new THREE.PointLight( 0xffffff, 0.8 ), 
 								new THREE.PointLight( 0xffffff, 0.0 ),
-								new THREE.PointLight( 0xffffff, 0.8 )];
+								new THREE.PointLight( 0xffffff, 0.0 )];
 				camera[0].add( pointLight[0] );
 				camera[1].add( pointLight[1] );
 				camera[2].add( pointLight[2] );
@@ -142,7 +142,7 @@
 
 				//helper
 				helper = new THREE.CameraHelper(camera[0]);
-				//scene.add(helper);
+				scene.add(helper);
 
 				//gamepad
 				window.addEventListener("gamepadconnected", (event) => {
@@ -290,14 +290,16 @@
 								rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI);
 								rotateAroundWorldAxis(object, new THREE.Vector3(1, 0, 0), -Math.PI/2);
 								virhas_tilt = object;
-								firstPerson.rotation.x = -Math.PI/2;
-								firstPerson.rotation.z = Math.PI;
-								firstPerson.position.z = 40;
-								firstPerson.position.y = -28.4;
 								virhas_tilt.add(firstPerson);
+								//firstPerson.rotation.x = -Math.PI/2;
+								//firstPerson.rotation.z = Math.PI;
+								firstPerson.position.y = -28.4;
+								firstPerson.position.z = 40;
 								virhas_pantilt.add( virhas_tilt );
 								virhas_pantilt.position.z = -0.65;
 								virhas.add(virhas_pantilt);
+								camera[0].lookAt(new THREE.Vector3(0, camera[0].getWorldPosition.y, -200));
+
 
 							}, onProgress, onError );
 
