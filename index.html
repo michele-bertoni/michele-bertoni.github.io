@@ -62,7 +62,7 @@
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
-				camera = [	new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 5000 ),
+				camera = [	new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 50000 ),
 							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 ),
 							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 ) ];
 
@@ -171,6 +171,7 @@
 				//model loader
 				virhas = new THREE.Group();
 				virhas_pantilt = new THREE.Group();
+				virhas_tilt = new THREE.Group();
 				var onProgress = function ( xhr ) {
 
 						if ( xhr.lengthComputable ) {
@@ -264,8 +265,8 @@
 
 								object.scale.x = 0.01; object.scale.y = 0.01; object.scale.z = 0.01;
 								object.position.y = 2.105+0.3416;
-								rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI);
-								rotateAroundWorldAxis(object, new THREE.Vector3(1, 0, 0), -Math.PI/2);
+								object.rotation.z = Math.PI;
+								object.rotation.x = -Math.PI/2;
 								virhas_pan = object;
 								virhas_pantilt.add( virhas_pan );
 
@@ -284,23 +285,18 @@
 							.setPath( 'models/virhas/' )
 							.load( 'virhas_tilt.obj', function ( object ) {
 
-								//object.up.y=0; object.up.z=1;
 								object.scale.x = 0.01; object.scale.y = 0.01; object.scale.z = 0.01;
-								object.position.y = 2.105+0.3416;
-								object.position.z = -0.413;
-								//rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI);
-								//rotateAroundWorldAxis(object, new THREE.Vector3(1, 0, 0), -Math.PI/2);
-								virhas_tilt = object;
-								virhas_tilt.add(firstPerson);
-								//firstPerson.rotation.x = -Math.PI/2;
-								//firstPerson.rotation.z = Math.PI;
-								firstPerson.position.z = -28.4;
-								firstPerson.position.y = 40;
+								virhas_tilt.position.y = 2.105+0.3416;
+								virhas_tilt.position.z = -0.413;
+								object.rotation.z = Math.PI;
+								object.rotation.x = -Math.PI/2;
+								virhas_tilt.add( object) ;
 								virhas_pantilt.add( virhas_tilt );
-								virhas_pantilt.position.z = -0.65;
 								virhas.add(virhas_pantilt);
-								//firstPerson.lookAt(new THREE.Vector3(0, camera[0].getWorldPosition.y, -200));
-
+								virhas_pantilt.position.z = -0.65;
+								firstPerson.position.y = 0.4;
+								firstPerson.position.z = -0.284;
+								virhas_tilt.add( firstPerson );
 
 							}, onProgress, onError );
 
