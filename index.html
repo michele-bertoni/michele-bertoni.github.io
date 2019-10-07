@@ -135,7 +135,7 @@
 				thirdPerson.add(camera[1]);
 				outSideArena = new THREE.Group();
 				outSideArena.add(camera[2]);
-				outSideArena.position.y = 650;
+				outSideArena.position.y = 65;
 				camera[2].position.set(-200, 0, 200);
 				camera[2].lookAt(new THREE.Vector3(0, 0, 0));
 				scene.add(outSideArena);
@@ -197,7 +197,7 @@
 							.setPath( 'models/virhas/' )
 							.load( 'virhas_body.obj', function ( object ) {
 
-								object.scale = new THREE.Vector3(0.1, 0.1, 0.1);
+								object.scale.x = 0.1; object.scale.y = 0.1; object.scale.z = 0.1;
 								object.position.y = 3.416;
 								object.rotation.z = Math.PI;
 								object.rotation.x = -Math.PI/2;
@@ -224,7 +224,7 @@
 							.setPath( 'models/virhas/' )
 							.load( 'virhas_wheel.obj', function ( object ) {
 
-								object.scale = new THREE.Vector3(0.1, 0.1, 0.1);
+								object.scale.x = 0.1; object.scale.y = 0.1; object.scale.z = 0.1;
 								object.position.y = 3.416;
 								//object.rotation.z = Math.PI;
 								//object.rotation.x = -Math.PI/2;
@@ -262,7 +262,7 @@
 							.setPath( 'models/virhas/' )
 							.load( 'virhas_pan.obj', function ( object ) {
 
-								object.scale = new THREE.Vector3(0.1, 0.1, 0.1);
+								object.scale.x = 0.1; object.scale.y = 0.1; object.scale.z = 0.1;
 								object.position.y = 21.05+3.416;
 								rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI);
 								rotateAroundWorldAxis(object, new THREE.Vector3(1, 0, 0), -Math.PI/2);
@@ -284,7 +284,7 @@
 							.setPath( 'models/virhas/' )
 							.load( 'virhas_tilt.obj', function ( object ) {
 
-								object.scale = new THREE.Vector3(0.1, 0.1, 0.1);
+								object.scale.x = 0.1; object.scale.y = 0.1; object.scale.z = 0.1;
 								object.position.y = 21.05+3.416;
 								object.position.z = -4.13;
 								rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI);
@@ -296,7 +296,7 @@
 								firstPerson.position.y = -28.4;
 								virhas_tilt.add(firstPerson);
 								virhas_pantilt.add( virhas_tilt );
-								virhas_pantilt.position.z = -65;
+								virhas_pantilt.position.z = -6.5;
 								virhas.add(virhas_pantilt);
 
 							}, onProgress, onError );
