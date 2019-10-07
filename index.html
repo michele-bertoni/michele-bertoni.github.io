@@ -62,7 +62,7 @@
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
-				camera = [	new THREE.PerspectiveCamera( 85, window.innerWidth / window.innerHeight, 10, 5000 ),
+				camera = [	new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 5000 ),
 							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 ),
 							new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 ) ];
 
@@ -284,7 +284,7 @@
 							.setPath( 'models/virhas/' )
 							.load( 'virhas_tilt.obj', function ( object ) {
 
-								object.up.y=0; object.up.z=1;
+								//object.up.y=0; object.up.z=1;
 								object.scale.x = 0.01; object.scale.y = 0.01; object.scale.z = 0.01;
 								object.position.y = 2.105+0.3416;
 								object.position.z = -0.413;
@@ -422,10 +422,10 @@
 						virhas_pantilt.rotation.y = Math.PI/2;
 
 					virhas_tilt.rotation.x -= speedtilt*Math.PI/3*deltaT;
-					if(virhas_tilt.rotation.x > 0)
-						virhas_tilt.rotation.x = 0;
-					else if(virhas_tilt.rotation.x < -Math.PI)
-						virhas_tilt.rotation.x = -Math.PI;
+					if(virhas_tilt.rotation.x > Math.PI/2)
+						virhas_tilt.rotation.x = Math.PI/2;
+					else if(virhas_tilt.rotation.x < -Math.PI/2)
+						virhas_tilt.rotation.x = -Math.PI/2;
 				}
 			}
 
@@ -450,15 +450,15 @@
 				if(isTiltReset) {
 					if(isTiltDecreasing) {
 						virhas_tilt.rotation.x += 5*Math.PI/3*deltaT;
-						if(virhas_tilt.rotation.x > -Math.PI/2) {
-							virhas_tilt.rotation.x = -Math.PI/2;
+						if(virhas_tilt.rotation.x > 0) {
+							virhas_tilt.rotation.x = 0;
 							isTiltReset = false;
 						}
 					}
 					else {
 						virhas_tilt.rotation.x -= 5*Math.PI/3*deltaT;
-						if(virhas_tilt.rotation.x < -Math.PI/2) {
-							virhas_tilt.rotation.x = -Math.PI/2;
+						if(virhas_tilt.rotation.x < 0) {
+							virhas_tilt.rotation.x = 0;
 							isTiltReset = false;
 						}
 					}
@@ -470,7 +470,7 @@
 				isTiltReset = true;
 
 				isPanDecreasing = virhas_pantilt.rotation.y>0 ? true : false;
-				isTiltDecreasing = virhas_tilt.rotation.x<-Math.PI/2 ? true : false;
+				isTiltDecreasing = virhas_tilt.rotation.x<0 ? true : false;
 			}
 
 			function handleGamepad() {
