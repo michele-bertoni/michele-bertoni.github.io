@@ -92,13 +92,10 @@ var DeviceOrientationControls = function ( object ) {
 
 		if ( device ) {
 
-			var alpha = -Math.PI;//device.alpha ? _Math.degToRad( -device.alpha ) + scope.alphaOffset : -Math.PI; // ROLL
-
-			var beta = device.beta ? -_Math.degToRad( device.beta ) : 0; // TILT
-
-			var gamma = device.gamma ? -_Math.degToRad( device.gamma ) : 0; // PAN
-
-			var orient = scope.screenOrientation ? _Math.degToRad( scope.screenOrientation ) : 0; // O
+			var alpha = 0 //scope.deviceOrientation.alpha ? THREE.Math.degToRad( scope.deviceOrientation.alpha ) + this.alphaOffsetAngle : 0; // Z
+			var beta = scope.deviceOrientation.beta ? -THREE.Math.degToRad( scope.deviceOrientation.beta ) + this.betaOffsetAngle : 0; // X'
+			var gamma = scope.deviceOrientation.gamma ? -THREE.Math.degToRad( scope.deviceOrientation.gamma ) + this.gammaOffsetAngle : 0; // Y''
+			var orient = scope.screenOrientation ? THREE.Math.degToRad( scope.screenOrientation ) : 0; // O
 
 			setObjectQuaternion( scope.object.quaternion, alpha, beta, gamma, orient );
 
