@@ -14,6 +14,7 @@
 	</head>
 	<body>
 		<script src="js/vr/HelioWebXRPolyfill.js"></script>
+		<script src="js/controls/KeyboardState.js"></script>
 		<script type="module">
 			import * as THREE from './build/three.module.js';
 			import { WEBGL } from './js/webgl.js';
@@ -21,7 +22,7 @@
 			import { MTLLoader } from './js/loaders/MTLLoader.js';
 			import { OBJLoader } from './js/loaders/OBJLoader.js';
 			import { WEBVR } from './js/vr/WebVR.js';
-			//import { DeviceOrientationControls } from './js/controls/DeviceOrientationControls.js';
+			import { DeviceOrientationControls } from './js/controls/DeviceOrientationControls.js';
 
 			document.documentElement.style.overflow = 'hidden';  
     		document.body.scroll = "no";
@@ -45,6 +46,7 @@
 			var ambientLight, pointLight;
 			var timer, switchedCamera=false, movedCamera=false;
 			//var controls;
+			var keyboard = new KeyboardState();
 
 			const m1_R = (-1.0 / 3.5);
 			const mL_R = (-12.50 / 3.5);
@@ -127,7 +129,6 @@
 				camera[0].add( pointLight[0] );
 				camera[1].add( pointLight[1] );
 				camera[2].add( pointLight[2] );
-
 
 				firstPerson = new THREE.Group();
 				firstPerson.position.set(0, 0, 0);
@@ -316,7 +317,9 @@
 				renderer.vr.enabled = true;
 				document.body.appendChild( renderer.domElement );
 
-				document.body.appendChild( WEBVR.createButton( renderer ) );
+				navigator.xr.supportsSession('immersive-vr').then(() => {
+					document.body.appendChild( WEBVR.createButton( renderer ) );
+				});
 
 
 				//timer
@@ -346,6 +349,7 @@
 			function render() {
 				var deltaT = timer.getDelta();
 				handleGamepad();
+				handleKeyboard();
 				try {
 					//controls.update();
 					move(speedStrafe, speedForward, speedAngular, deltaT);
@@ -523,6 +527,45 @@
 					camera[2].lookAt(new THREE.Vector3(0, 0, 0));
 				} else if(!gamepad.buttons[3].pressed) {
 					movedCamera = false;
+				}
+
+			}
+
+			function handleKeyboard() {
+				keyboard.update();
+
+				var turbo = keyboard.pressed("shift") ? 1.0 : 0.5;
+				speedStrafe = ((keyboard.pressed("right") ? 1.00 : 0.00) + (keyboard.pressed("left") ? -1.00 : 0.00))*turbo;
+				speedForward = ((keyboard.pressed("up") ? 1.00 : 0.00) + (keyboard.pressed("down") ? -1.00 : 0.00))*turbo;
+				speedAngular = ((keyboard.pressed("pagedown") ? 1.00 : 0.00) + (keyboard.pressed("pageup") ? -1.00 : 0.00))*turbo;
+				if(keyboard.down("Z")){
+					resetPanTilt();
+					speedPan = 0.00;
+					speedTilt = 0.00;
+				} else {
+					speedPan = (keyboard.pressed("D") ? 1.00 : 0.00) + (keyboard.pressed("A") ? -1.00 : 0.00);
+					speedTilt = (keyboard.pressed("W") ? 1.00 : 0.00) + (keyboard.pressed("S") ? -1.00 : 0.00);
+				}
+				if(keyboard.down("C")) {
+					switchCamera();
+				}
+				if(isOutOfBound) {
+					isOutOfBound = false;
+					try{
+						gamepad.vibrationActuator.playEffect("dual-rumble", {
+						  startDelay: 0,
+						  duration: 300,
+						  weakMagnitude: 0.8,
+						  strongMagnitude: 0.7
+						});
+					} catch(e){}
+				}
+				if(activeCamera===2 && keyboard.down("X")) {
+					if(camera[2].position.x<0 && camera[2].position.z>0) {camera[2].position.x*=-1;} 
+					else if(camera[2].position.x>0 && camera[2].position.z>0) {camera[2].position.z*=-1;}
+					else if(camera[2].position.x>0 && camera[2].position.z<0) {camera[2].position.x*=-1;}
+					else {camera[2].position.z*=-1;}
+					camera[2].lookAt(new THREE.Vector3(0, 0, 0));
 				}
 
 			}
