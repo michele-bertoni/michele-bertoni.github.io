@@ -36,7 +36,7 @@
 			var container;
 			var activeCamera=0, camera, scene, helper;
 			var airlab, airlabTexture, airlabShader, airlabMaterial, arenaNX, arenaNZ, arenaPX, arenaPZ;
-			var firstPerson, thirdPerson, outSideArena;
+			var firstPerson, eyesPan, eyesTilt, thirdPerson, outSideArena;
 			var virhas, virhas_body, virhas_wheel0, virhas_wheel1, virhas_wheel2, virhas_pan, virhas_tilt, virhas_pantilt;
 			var rotWorldMatrix;
 			var speed0, speed1, speed2, speedPan, speedTilt, speedStrafe, speedForward, speedAngular;
@@ -44,8 +44,8 @@
 			var canvas, context, renderer;
 			var gridXZ, floor;
 			var ambientLight, pointLight;
-			var timer, switchedCamera=false, movedCamera=false;
-			//var controls;
+			var timer, switchedCamera=false, movedCamera=false, isXREanbled=false;
+			var controls, deviceOrientation = new THREE.Vector3(0, 0, 0);
 			var keyboard = new KeyboardState();
 
 			const m1_R = (-1.0 / 3.5);
@@ -130,9 +130,15 @@
 				camera[1].add( pointLight[1] );
 				camera[2].add( pointLight[2] );
 
+				eyesTilt = new THREE.Group();
+				eyesTilt.position.set(0, 0, 0);
+				eyesTilt.add(camera[0]);
+				eyesPan = new THREE.Group();
+				eyesPan.position.set(0, 0, 0);
+				eyesPan.add(eyesTilt);
 				firstPerson = new THREE.Group();
 				firstPerson.position.set(0, 0, 0);
-				firstPerson.add(camera[0]);
+				firstPerson.add(eyesPan);
 				thirdPerson = new THREE.Group();
 				thirdPerson.position.set(0, 0, 0);
 				thirdPerson.add(camera[1]);
@@ -147,7 +153,7 @@
 
 				//helper
 				helper = new THREE.CameraHelper(camera[0]);
-				//scene.add(helper);
+				scene.add(helper);
 
 				//gamepad
 				window.addEventListener("gamepadconnected", (event) => {
@@ -160,7 +166,7 @@
 				});
 
 				//controls
-				//controls = new DeviceOrientationControls( firstPerson );
+				controls = new DeviceOrientationControls( deviceOrientation );
 
 				//floor
 				gridXZ = new THREE.GridHelper(100, 250, new THREE.Color(0xff0000), new THREE.Color(0x00ff00) );
@@ -319,6 +325,7 @@
 
 				navigator.xr.supportsSession('immersive-vr').then(() => {
 					document.body.appendChild( WEBVR.createButton( renderer ) );
+					isXREanbled = true;
 				});
 
 
@@ -351,7 +358,11 @@
 				handleGamepad();
 				handleKeyboard();
 				try {
-					//controls.update();
+					if(isXREanbled && activeCamera===0) {
+						controls.update();
+						eyesPan.rotation.y = -deviceOrientation.y;
+						eyesTilt.rotation.x = -deviceOrientation.x;
+					} 
 					move(speedStrafe, speedForward, speedAngular, deltaT);
 					rotatePanTilt(speedPan, speedTilt, deltaT);
 
