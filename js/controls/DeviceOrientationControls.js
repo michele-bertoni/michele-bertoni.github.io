@@ -111,7 +111,8 @@ var DeviceOrientationControls = function ( object ) {
 
 		if ( device ) {
 			console.log(device);
-			scope.object.set(scope.deviceOrientation.beta*Math.PI/180, scope.deviceOrientation.gamma*Math.PI/180, scope.deviceOrientation.alpha*Math.PI/180);
+			console.log(scope.screenOrientation);
+			scope.object.set(scope.deviceOrientation.gamma*Math.PI/180, scope.deviceOrientation.alpha*Math.PI/180, scope.deviceOrientation.beta*Math.PI/180);
 		}
 	}
 
