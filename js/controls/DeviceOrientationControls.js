@@ -110,9 +110,17 @@ var DeviceOrientationControls = function ( object ) {
 		var device = scope.deviceOrientation;
 
 		if ( device ) {
-			console.log(device);
-			console.log(scope.screenOrientation);
-			scope.object.set(scope.deviceOrientation.gamma*Math.PI/180, scope.deviceOrientation.alpha*Math.PI/180, scope.deviceOrientation.beta*Math.PI/180);
+			//console.log(device);
+			//console.log(scope.screenOrientation);
+			var pan, tilt;
+			pan = scope.deviceOrientation.alpha-90;
+			if(pan<0) pan+=360;
+
+			tilt = scope.deviceOrientation.gamma>=0 ? 90-scope.deviceOrientation.gamma : -90-scope.deviceOrientation.gamma;
+			if(scope.screenOrientation<0) tilt+=180;
+			if(tilt<0) tilt+=360; 
+
+			scope.object.set(tilt*Math.PI/180, pan*Math.PI/180, 0);
 		}
 	}
 
