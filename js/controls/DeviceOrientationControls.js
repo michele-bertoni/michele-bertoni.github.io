@@ -17,7 +17,7 @@ var DeviceOrientationControls = function ( object ) {
 	var scope = this;
 
 	this.object = object;
-	//this.object.rotation.reorder( 'YXZ' );
+	this.object.rotation.reorder( 'YXZ' );
 
 	this.enabled = true;
 
@@ -84,7 +84,7 @@ var DeviceOrientationControls = function ( object ) {
 
 	};
 
-	/*this.update = function () {
+	this.update = function () {
 
 		if ( scope.enabled === false ) return;
 
@@ -102,9 +102,9 @@ var DeviceOrientationControls = function ( object ) {
 		}
 
 
-	};*/
+	};
 
-	this.update = function () {
+	/*this.update = function () {
 		if ( scope.enabled === false ) return;
 
 		var device = scope.deviceOrientation;
@@ -112,7 +112,7 @@ var DeviceOrientationControls = function ( object ) {
 		if ( device ) {
 			scope.object.set(scope.deviceOrientation.beta*Math.PI/180, scope.deviceOrientation.gamma*Math.PI/180, scope.deviceOrientation.alpha*Math.PI/180);
 		}
-	}
+	}*/
 
 	this.dispose = function () {
 

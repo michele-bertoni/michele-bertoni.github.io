@@ -166,7 +166,7 @@
 				});
 
 				//controls
-				controls = new DeviceOrientationControls( deviceOrientation );
+				controls = new DeviceOrientationControls( eyesPan );
 
 				//floor
 				gridXZ = new THREE.GridHelper(100, 250, new THREE.Color(0xff0000), new THREE.Color(0x00ff00) );
@@ -360,9 +360,10 @@
 				handleKeyboard();
 				try {
 					if(isXREanbled && activeCamera===0) {
+						camera[0].position.set(0, 0, 0);
 						controls.update();
-						eyesPan.rotation.y = -deviceOrientation.x;
-						eyesTilt.rotation.x = -deviceOrientation.y;
+						//eyesPan.rotation.y = -deviceOrientation.x;
+						//eyesTilt.rotation.x = -deviceOrientation.y;
 					} 
 					move(speedStrafe, speedForward, speedAngular, deltaT);
 					rotatePanTilt(speedPan, speedTilt, deltaT);
