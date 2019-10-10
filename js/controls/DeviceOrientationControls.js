@@ -121,6 +121,7 @@ var DeviceOrientationControls = function ( object ) {
 			if(tilt<0) tilt+=360; 
 
 			scope.object.set(tilt*Math.PI/180, pan*Math.PI/180, 0);
+			console.log(scope.object);
 		}
 	}
 
