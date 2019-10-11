@@ -23268,7 +23268,7 @@ function WebXRManager( renderer, gl ) {
 				var viewport = baseLayer.getViewport( view );
 				var viewMatrix = view.transform.inverse.matrix;
 
-				if(!rotationEnabled) {
+				if(!this.rotationEnabled) {
 					viewMatrix = new THREE.Matrix4();
 				}
 
