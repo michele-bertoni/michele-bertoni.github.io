@@ -590,7 +590,7 @@
 					if(isXREanbled && activeCamera===0) {
 						controls.update();
 						eyesPan.rotation.y = -deviceOrientation.y;
-						eyesTilt.rotation.x = -deviceOrientation.x;
+						eyesTilt.rotation.x = deviceOrientation.x;
 					} 
 			}
 
