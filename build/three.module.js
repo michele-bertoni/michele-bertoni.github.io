@@ -23075,6 +23075,7 @@ function WebXRManager( renderer, gl ) {
 	//
 
 	this.enabled = false;
+	this.rotationEnabled = true;
 
 	this.getPose = function () {
 		return pose;
@@ -23266,6 +23267,10 @@ function WebXRManager( renderer, gl ) {
 				var view = views[ i ];
 				var viewport = baseLayer.getViewport( view );
 				var viewMatrix = view.transform.inverse.matrix;
+
+				if(!rotationEnabled) {
+					viewMatrix = new THREE.Matrix4();
+				}
 
 				var camera = cameraVR.cameras[ i ];
 				camera.matrix.fromArray( viewMatrix ).getInverse( camera.matrix );
