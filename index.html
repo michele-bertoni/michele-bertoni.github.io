@@ -22,6 +22,7 @@
 			import { MTLLoader } from './js/loaders/MTLLoader.js';
 			import { OBJLoader } from './js/loaders/OBJLoader.js';
 			import { WEBVR } from './js/vr/WebVR.js';
+			import { isXREanbled } from './js/vr/WebVR.js';
 			import { DeviceOrientationControls } from './js/controls/DeviceOrientationControls.js';
 
 			document.documentElement.style.overflow = 'hidden';  
@@ -44,7 +45,7 @@
 			var canvas, context, renderer;
 			var gridXZ, floor;
 			var ambientLight, pointLight;
-			var timer, switchedCamera=false, movedCamera=false, isXREanbled=false;
+			var timer, switchedCamera=false, movedCamera=false;
 			var controls, deviceOrientation = new THREE.Vector3(0, 0, 0);
 			var keyboard = new KeyboardState();
 
@@ -359,7 +360,7 @@
 				handleKeyboard();
 				try {
 					console.log(isXREanbled);
-					if(WEBVR.isXREanbled && activeCamera===0) {
+					if(isXREanbled && activeCamera===0) {
 						controls.update();
 						eyesPan.rotation.y = -deviceOrientation.y;
 						eyesTilt.rotation.x = -deviceOrientation.x;

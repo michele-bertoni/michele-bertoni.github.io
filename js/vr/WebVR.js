@@ -5,11 +5,9 @@
  * Based on @tojiro's vr-samples-utils.js
  */
 
-
+var isXREanbled = false;
 
 var WEBVR = {
-
-	isXREanbled: false;
 
 	createButton: function ( renderer, options ) {
 
@@ -256,4 +254,5 @@ var WEBVR = {
 
 };
 
+export { isXREanbled };
 export { WEBVR };
