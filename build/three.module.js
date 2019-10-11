@@ -23269,7 +23269,7 @@ function WebXRManager( renderer, gl ) {
 				var viewMatrix = view.transform.inverse.matrix;
 
 				if(!scope.rotationEnabled) {
-					viewMatrix = new THREE.Matrix4();
+					viewMatrix = new Matrix4();
 				}
 
 				var camera = cameraVR.cameras[ i ];
