@@ -45,7 +45,7 @@
 			var canvas, context, renderer;
 			var gridXZ, floor;
 			var ambientLight, pointLight;
-			var timer, switchedCamera=false, movedCamera=false;
+			var timer, switchedCamera=false, movedCamera=false, wasXREanbled=false;
 			var controls, deviceOrientation = new THREE.Vector3(0, 0, 0);
 			var keyboard = new KeyboardState();
 
@@ -165,9 +165,6 @@
 					console.log("A gamepad disconnected:");
 					console.log(event.gamepad);
 				});
-
-				//controls
-				controls = new DeviceOrientationControls( deviceOrientation );
 
 				//floor
 				gridXZ = new THREE.GridHelper(100, 250, new THREE.Color(0xff0000), new THREE.Color(0x00ff00) );
@@ -326,7 +323,6 @@
 
 				navigator.xr.supportsSession('immersive-vr').then(() => {
 					document.body.appendChild( WEBVR.createButton( renderer ) );
-					camera[0].position.set(0, 0, 0);
 				}).catch();
 
 
@@ -358,13 +354,8 @@
 				var deltaT = timer.getDelta();
 				handleGamepad();
 				handleKeyboard();
+				handleControls();
 				try {
-					console.log(isXREanbled);
-					if(isXREanbled && activeCamera===0) {
-						controls.update();
-						eyesPan.rotation.y = -deviceOrientation.y;
-						eyesTilt.rotation.x = -deviceOrientation.x;
-					} 
 					move(speedStrafe, speedForward, speedAngular, deltaT);
 					rotatePanTilt(speedPan, speedTilt, deltaT);
 
@@ -581,6 +572,24 @@
 					camera[2].lookAt(new THREE.Vector3(0, 0, 0));
 				}
 
+			}
+
+			function handleControls() {
+				if(isXREanbled != wasXREanbled) {
+					if(isXREanbled) {
+						camera[0].position.set(0, 0, 0);
+						controls = new DeviceOrientationControls( deviceOrientation );
+					} else {
+						camera[0].position.set(0, 1.5, 0.2);
+					}
+
+					wasXREanbled = isXREanbled;
+				}
+					if(isXREanbled && activeCamera===0) {
+						controls.update();
+						eyesPan.rotation.y = -deviceOrientation.y;
+						eyesTilt.rotation.x = -deviceOrientation.x;
+					} 
 			}
 
 			function switchCamera() {
