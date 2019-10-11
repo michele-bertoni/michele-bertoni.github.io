@@ -353,15 +353,13 @@
 			function render() {
 				var deltaT = timer.getDelta();
 				handleGamepad();
-				handleKeyboard();
 				handleControls();
-				try {
+				//try {
 					move(speedStrafe, speedForward, speedAngular, deltaT);
 					rotatePanTilt(speedPan, speedTilt, deltaT);
-
-				} catch(e) {
-					return;
-				}
+				//} catch(e) {
+				//	return;
+				//}
 				renderer.render( scene, camera[activeCamera] );
 			}
 			
@@ -491,6 +489,7 @@
 					speedAngular = 0.00;
 					speedPan = 0.00;
 					speedTilt = 0.00;
+					handleKeyboard();
 					return;
 				}
 				var turbo = gamepad.buttons[0].pressed ? 1.0 : 0.5;
@@ -603,7 +602,7 @@
 
 				if(activeCamera==0)renderer.vr.rotationEnabled = false;
 				else renderer.vr.rotationEnabled = true;
-				
+
 				try {
 					if(activeCamera===0) airlab.position.y = 5.5;
 					else if (activeCamera===1) airlab.position.y = 5.5;
