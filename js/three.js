@@ -22607,7 +22607,7 @@
 
 		this.enabled = false;
 
-		this.getPose() = function () {
+		this.getPose = function () {
 			return pose;
 		}
 

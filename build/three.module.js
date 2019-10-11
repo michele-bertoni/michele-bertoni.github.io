@@ -23076,6 +23076,10 @@ function WebXRManager( renderer, gl ) {
 
 	this.enabled = false;
 
+	this.getPose = function () {
+		return pose;
+	}
+
 	this.getController = function ( id ) {
 
 		var controller = controllers[ id ];
