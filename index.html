@@ -582,15 +582,15 @@
 					} else {
 						camera[0].position.set(0, 1.5, 0.2);
 						eyesPan.rotation.y = 0;
-						eyesTilt.rotation.x = 0;
+						//eyesTilt.rotation.x = 0;
 					}
 
 					wasXREanbled = isXREanbled;
 				}
 					if(isXREanbled && activeCamera===0) {
 						controls.update();
-						eyesTilt.rotation.y = -deviceOrientation.y;
-						eyesPan.rotation.x = -deviceOrientation.x;
+						eyesPan.rotation.y = -deviceOrientation.y;
+						//eyesTilt.rotation.x = -deviceOrientation.x;
 					} 
 			}
 
