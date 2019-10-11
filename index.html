@@ -581,6 +581,8 @@
 						controls = new DeviceOrientationControls( deviceOrientation );
 					} else {
 						camera[0].position.set(0, 1.5, 0.2);
+						eyesPan.rotation.y = 0;
+						eyesTilt.rotation.x = 0;
 					}
 
 					wasXREanbled = isXREanbled;
