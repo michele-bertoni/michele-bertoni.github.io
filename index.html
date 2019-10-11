@@ -578,19 +578,20 @@
 				if(isXREanbled != wasXREanbled) {
 					if(isXREanbled) {
 						camera[0].position.set(0, 0, 0);
-						controls = new DeviceOrientationControls( deviceOrientation );
+						//controls = new DeviceOrientationControls( deviceOrientation );
 					} else {
 						camera[0].position.set(0, 1.5, 0.2);
 						eyesPan.rotation.y = 0;
-						//eyesTilt.rotation.x = 0;
+						eyesTilt.rotation.x = 0;
 					}
 
 					wasXREanbled = isXREanbled;
 				}
 					if(isXREanbled && activeCamera===0) {
-						controls.update();
+						/*controls.update();
 						eyesPan.rotation.y = -deviceOrientation.y;
-						//eyesTilt.rotation.x = -deviceOrientation.x;
+						eyesTilt.rotation.x = -deviceOrientation.x;*/
+						console.log(renderer.vr.pose);
 					} 
 			}
 
