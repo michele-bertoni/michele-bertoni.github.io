@@ -23272,7 +23272,7 @@ function WebXRManager( renderer, gl ) {
 					//viewMatrix = new Matrix4();
 				}
 
-				console.log(viewMatrix);
+				console.log(view.transform.orientation);
 				var camera = cameraVR.cameras[ i ];
 				camera.matrix.fromArray( viewMatrix ).getInverse( camera.matrix );
 				camera.projectionMatrix.fromArray( view.projectionMatrix );
