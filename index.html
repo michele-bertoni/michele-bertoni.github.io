@@ -354,12 +354,12 @@
 				var deltaT = timer.getDelta();
 				handleGamepad();
 				handleControls();
-				//try {
+				try {
 					move(speedStrafe, speedForward, speedAngular, deltaT);
 					rotatePanTilt(speedPan, speedTilt, deltaT);
-				//} catch(e) {
-				//	return;
-				//}
+				} catch(e) {
+					return;
+				}
 				renderer.render( scene, camera[activeCamera] );
 			}
 			
