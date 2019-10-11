@@ -326,7 +326,7 @@
 				navigator.xr.supportsSession('immersive-vr').then(() => {
 					document.body.appendChild( WEBVR.createButton( renderer ) );
 					camera[0].position.set(0, 0, 0);
-				}).catch(console.log(XR not found));
+				}).catch();
 
 
 				//timer
