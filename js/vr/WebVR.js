@@ -9,6 +9,8 @@
 
 var WEBVR = {
 
+	isXREanbled: false;
+
 	createButton: function ( renderer, options ) {
 
 		if ( options && options.referenceSpaceType ) {
@@ -62,6 +64,8 @@ var WEBVR = {
 
 				currentSession = session;
 
+				isXREanbled = true;
+
 			}
 
 			function onSessionEnded( /*event*/ ) {
@@ -72,6 +76,8 @@ var WEBVR = {
 				button.textContent = 'ENTER XR';
 
 				currentSession = null;
+
+				isXREanbled = false;
 
 			}
 

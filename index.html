@@ -325,9 +325,8 @@
 
 				navigator.xr.supportsSession('immersive-vr').then(() => {
 					document.body.appendChild( WEBVR.createButton( renderer ) );
-					isXREanbled = true;
 					camera[0].position.set(0, 0, 0);
-				});
+				}).catch(console.log(XR not found));
 
 
 				//timer
@@ -359,7 +358,8 @@
 				handleGamepad();
 				handleKeyboard();
 				try {
-					if(isXREanbled && activeCamera===0) {
+					console.log(isXREanbled);
+					if(WEBVR.isXREanbled && activeCamera===0) {
 						controls.update();
 						eyesPan.rotation.y = -deviceOrientation.y;
 						eyesTilt.rotation.x = -deviceOrientation.x;
