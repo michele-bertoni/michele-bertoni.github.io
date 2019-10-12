@@ -23272,7 +23272,8 @@ function WebXRManager( renderer, gl ) {
 				var camera = cameraVR.cameras[ i ];
 				camera.matrix.fromArray( viewMatrix ).getInverse( camera.matrix );
 				if(!scope.panTiltRotationEnabled) {
-					var rotation = new Quaternion(0.0, 0.0, view.transform.orientation.z, view.transform.orientation.w);
+					var inputPose = frame.getPose( inputSource.targetRaySpace, referenceSpace );
+					var rotation = new Quaternion(0.0, 0.0, inputPose.transform.orientation.z, inputPose.transform.orientation.w);
 					//var translation = new Quaternion(view.transform.position.x, view.transform.position.y, view.transform.position.z, view.transform.position.w);
 					camera.matrix.makeRotationFromQuaternion(rotation);
 					camera.matrix.setPosition(view.transform.position.x, view.transform.position.y, view.transform.position.z);
