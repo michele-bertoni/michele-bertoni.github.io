@@ -23271,7 +23271,7 @@ function WebXRManager( renderer, gl ) {
 
 				if(!scope.rotationEnabled) {
 					var rotation = new Quaternion(view.transform.orientation.x, view.transform.orientation.y, view.transform.orientation.z, view.transform.orientation.w)
-					viewMatrix = (new Matrix4()).fromArray( viewMatrix ).makeRotationFromQuaternion(rotation.inverse()).toArray();
+					viewMatrix = (new Matrix4()).fromArray( viewMatrix ).makeRotationFromQuaternion(rotation.toArray();
 				}
 
 				console.log(pose);
