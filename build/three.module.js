@@ -23075,7 +23075,7 @@ function WebXRManager( renderer, gl ) {
 	//
 
 	this.enabled = false;
-	this.rotationEnabled = true;
+	this.panTiltRotationEnabled = true;
 
 	this.getPose = function () {
 		return pose;
@@ -23271,7 +23271,7 @@ function WebXRManager( renderer, gl ) {
 
 				var camera = cameraVR.cameras[ i ];
 				camera.matrix.fromArray( viewMatrix ).getInverse( camera.matrix );
-				if(!scope.rotationEnabled) {
+				if(!scope.panTiltRotationEnabled) {
 					var rotation = new Quaternion(0.0, 0.0, view.transform.orientation.z, view.transform.orientation.w)
 					camera.matrix.makeRotationFromQuaternion(rotation);
 				}

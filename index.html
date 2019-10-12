@@ -353,7 +353,7 @@
 			function render() {
 				var deltaT = timer.getDelta();
 				handleGamepad();
-				handleControls();
+				onXRChange();
 				try {
 					move(speedStrafe, speedForward, speedAngular, deltaT);
 					rotatePanTilt(speedPan, speedTilt, deltaT);
@@ -573,35 +573,23 @@
 
 			}
 
-			function handleControls() {
+			function onXRChange() {
 				if(isXREanbled != wasXREanbled) {
 					if(isXREanbled) {
-						//camera[0].position.set(0, 0, 0);
-						if(activeCamera==0)renderer.vr.rotationEnabled = false;
-						else renderer.vr.rotationEnabled = true;
-						//controls = new DeviceOrientationControls( deviceOrientation );
-					} else {
-						camera[0].position.set(0, 1.5, 0.2);
-						eyesPan.rotation.y = 0;
-						eyesTilt.rotation.x = 0;
-					}
+						if(activeCamera==0)renderer.vr.panTiltRotationEnabled = true;
+						else renderer.vr.panTiltRotationEnabled = true;
+					} 
 
 					wasXREanbled = isXREanbled;
 				}
-					if(isXREanbled && activeCamera===0) {
-						//controls.update();
-						//eyesPan.rotation.y = -renderer.vr.getPose().;
-						//eyesTilt.rotation.x = -deviceOrientation.x;
-						//console.log(renderer.vr.getPose());
-					} 
 			}
 
 			function switchCamera() {
 				pointLight[activeCamera].intensity = 0.0;
 				activeCamera = (activeCamera+1)%3;
 
-				if(activeCamera==0)renderer.vr.rotationEnabled = false;
-				else renderer.vr.rotationEnabled = true;
+				if(activeCamera==0)renderer.vr.panTiltRotationEnabled = false;
+				else renderer.vr.panTiltRotationEnabled = true;
 
 				try {
 					if(activeCamera===0) airlab.position.y = 5.5;
