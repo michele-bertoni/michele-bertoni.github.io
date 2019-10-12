@@ -23269,12 +23269,14 @@ function WebXRManager( renderer, gl ) {
 				var viewMatrix = view.transform.inverse.matrix;
 				console.log(pose);
 
+				if(!scope.rotationEnabled) {
+					var rotation = new Quaternion(view.transform.orientation.x, view.transform.orientation.y, view.transform.orientation.z, view.transform.orientation.w)
+					viewMatrix = (new Matrix4()).fromArray( viewMatrix ).makeRotationFromQuaternion(rotation.inverse()).toArray();
+				}
+
+				console.log(pose);
 				var camera = cameraVR.cameras[ i ];
 				camera.matrix.fromArray( viewMatrix ).getInverse( camera.matrix );
-				if(!scope.rotationEnabled) {
-					var rotation = new Quaternion(pose.transform.orientation.x/2, pose.transform.orientation.y/2, pose.transform.orientation.z/2, pose.transform.orientation.w/2);
-					camera.matrix.makeRotationFromQuaternion(rotation.inverse());
-				}
 				camera.projectionMatrix.fromArray( view.projectionMatrix );
 				camera.viewport.set( viewport.x, viewport.y, viewport.width, viewport.height );
 
