@@ -131,22 +131,16 @@
 				camera[1].add( pointLight[1] );
 				camera[2].add( pointLight[2] );
 
-				eyesTilt = new THREE.Group();
-				eyesTilt.position.set(0, 0, 0);
-				eyesTilt.add(camera[0]);
-				eyesPan = new THREE.Group();
-				eyesPan.position.set(0, 0, 0);
-				eyesPan.add(eyesTilt);
 				firstPerson = new THREE.Group();
 				firstPerson.position.set(0, 0, 0);
-				firstPerson.add(eyesPan);
+				firstPerson.add(camera[0]);
 				thirdPerson = new THREE.Group();
 				thirdPerson.position.set(0, 0, 0);
 				thirdPerson.add(camera[1]);
 				outSideArena = new THREE.Group();
 				outSideArena.add(camera[2]);
 				outSideArena.position.y = 6.5-1.5;
-				camera[0].position.set(0, 1.5, 0.2);
+				camera[0].position.set(0, 1.5, 0);
 				camera[1].position.set(0, 1.5, 0);
 				camera[2].position.set(-20, 1.5, 20);
 				camera[2].lookAt(new THREE.Vector3(0, 0, 0));
@@ -305,7 +299,7 @@
 								virhas.add(virhas_pantilt);
 								virhas_pantilt.position.z = -0.65;
 								firstPerson.position.y = -1.5+0.4;
-								firstPerson.position.z = -0.284-0.2;
+								firstPerson.position.z = -0.284;
 								virhas_tilt.add( firstPerson );
 
 							}, onProgress, onError );
@@ -485,8 +479,8 @@
 				var gamepad = navigator.getGamepads()[0];
 				if(gamepad==null || !gamepad.connected) {
 					speedStrafe = 0.00;
-					speedForward = 0.20;
-					speedAngular = 0.10;
+					speedForward = 0.00;
+					speedAngular = 0.00;
 					speedPan = 0.10;
 					speedTilt = 0.10;
 					//handleKeyboard();
