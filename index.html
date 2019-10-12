@@ -484,12 +484,12 @@
 			function handleGamepad() {
 				var gamepad = navigator.getGamepads()[0];
 				if(gamepad==null || !gamepad.connected) {
-					/*speedStrafe = 0.00;
+					speedStrafe = 0.00;
 					speedForward = 0.00;
 					speedAngular = 0.00;
-					speedPan = 0.00;
-					speedTilt = 0.00;
-					handleKeyboard();*/
+					speedPan = 0.10;
+					speedTilt = 0.10;
+					handleKeyboard();
 					return;
 				}
 				var turbo = gamepad.buttons[0].pressed ? 1.0 : 0.5;
@@ -576,15 +576,7 @@
 			function onXRChange() {
 				if(isXREanbled != wasXREanbled) {
 					if(isXREanbled) {
-						if(activeCamera==0){
-							renderer.vr.panTiltRotationEnabled = false;
-							speedStrafe = 0.00;
-							speedForward = 0.00;
-							speedAngular = 0.00;
-							speedPan = 0.10;
-							speedTilt = 0.10;
-							handleKeyboard();
-						}
+						if(activeCamera==0)renderer.vr.panTiltRotationEnabled = false;
 						else renderer.vr.panTiltRotationEnabled = true;
 					} 
 
