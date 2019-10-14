@@ -2,19 +2,25 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<link rel="icon" type="image/png" href="favicon.png" />
+		<link rel="icon" type="image/svg" href="favicon.svg" />
 		<title>ViRHaS - Simulator</title>
-		<style>
+		<style type="text/css">
 			body { margin: 0; }
 			canvas { width: 100%; height: 100% }
+			
 		</style>
 		<link type="text/css" rel="stylesheet" href="main.css">
+		<link rel="stylesheet" type="text/css" href="js/loaders/loading-bar.css"/>
 		<!-- WebXR Device API (For Chrome M76+), expires 10/16/2019 -->
 		<meta http-equiv="origin-trial" content="AgNyW0SVD+KypUB8gL1YdtIVt2wICXJ33bqXY/BNa/EqayhAKk9YaP/5Z3PIa0QUFQCiGLVKYaOBGxgsXPEUoQ8AAAB0eyJvcmlnaW4iOiJodHRwczovL21pY2hlbGUtYmVydG9uaS5naXRodWIuaW86NDQzIiwiZmVhdHVyZSI6IldlYlhSRGV2aWNlTTc2IiwiZXhwaXJ5IjoxNTczNTY4ODg2LCJpc1N1YmRvbWFpbiI6dHJ1ZX0=">
 	</head>
 	<body>
+		<section id="loading-screen">
+			<div id="loader"></div>
+		</section>
 		<script src="js/vr/HelioWebXRPolyfill.js"></script>
 		<script src="js/controls/KeyboardState.js"></script>
+		<script type="text/javascript" src="js/loaders/loading-bar.js"></script>
 		<script type="module">
 			import * as THREE from './build/three.module.js';
 			import { WEBGL } from './js/webgl.js';
@@ -64,6 +70,15 @@
 			}
 
 			function init() {
+				const loadingManager = new THREE.LoadingManager( () => {
+	
+					const loadingScreen = document.getElementById( 'loading-screen' );
+					loadingScreen.classList.add( 'fade-out' );
+					
+					// optional: remove loader from DOM via event listener
+					loadingScreen.addEventListener( 'transitionend', onTransitionEnd );
+					
+				} );
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
@@ -78,7 +93,7 @@
 
 				//airlab scene
 				
-				airlabTexture = new THREE.CubeTextureLoader() .setPath( 'models/airlab/' ) .load( [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png' ] );
+				airlabTexture = new THREE.CubeTextureLoader(loadingManager) .setPath( 'models/airlab/' ) .load( [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png' ] );
 				airlabShader = THREE.ShaderLib.cube;
 				airlabShader.uniforms.tCube.value = airlabTexture;
 
@@ -189,7 +204,7 @@
 
 				var onError = function () { };
 
-				THREE.Loader.Handlers.add( /\.dds$/i, new DDSLoader() );
+				//THREE.Loader.Handlers.add( /\.dds$/i, new DDSLoader() );
 
 				new MTLLoader()
 					.setPath( 'models/virhas/' )
@@ -231,21 +246,14 @@
 
 								object.scale.x = 0.1; object.scale.y = 0.1; object.scale.z = 0.1;
 								object.position.y = 3.416;
-								//object.rotation.z = Math.PI;
-								//object.rotation.x = -Math.PI/2;
 								rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI);
 								rotateAroundWorldAxis(object, new THREE.Vector3(1, 0, 0), -Math.PI/2);
-								//rotateAroundWorldAxis(object, new THREE.Vector3(0, 1, 0), 2/3*Math.PI);
-								//rotateAroundWorldAxis(object, new THREE.Vector3(0, 0, 1), Math.PI/6);
-								//object.applyMatrix( new THREE.Matrix4().makeTranslation(0, 0, -30) );
 								virhas_wheel1 = object;
 								virhas_wheel1.rotation.order = 'XZY';
 								virhas_wheel0 = object.clone();
-								//rotateAroundWorldAxis(virhas_wheel2, new THREE.Vector3(0, 1, 0), 2/3*Math.PI);
 								virhas_wheel0.rotation.order = 'XZY';
 								virhas_wheel0.rotation.z = -1/3*Math.PI;
 								virhas_wheel2 = object.clone();
-								//rotateAroundWorldAxis(virhas_wheel3, new THREE.Vector3(0, 1, 0), -2/3*Math.PI);
 								virhas_wheel2.rotation.order = 'XZY';
 								virhas_wheel2.rotation.z = 1/3*Math.PI;
 								virhas.add( virhas_wheel0 );
@@ -317,7 +325,9 @@
 
 				navigator.xr.supportsSession('immersive-vr').then(() => {
 					document.body.appendChild( WEBVR.createButton( renderer ) );
-				}).catch();
+				}).catch(() => {
+					console.log("Immersive VR mode not supported")
+				});
 
 
 				//timer
@@ -592,6 +602,13 @@
 				} catch(e) {}
 				pointLight[activeCamera].intensity = 0.8;
 				switchedCamera = true;
+			}
+
+
+			function onTransitionEnd( event ) {
+
+				event.target.remove();
+				
 			}
 
 		</script>
