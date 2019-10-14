@@ -74,6 +74,11 @@
 	
 					const loadingScreen = document.getElementById( 'loading-screen' );
 					loadingScreen.classList.add( 'fade-out' );
+					navigator.xr.supportsSession('immersive-vr').then(() => {
+						document.body.appendChild( WEBVR.createButton( renderer ) );
+					}).catch(() => {
+						console.log("Immersive VR mode not supported")
+					});
 					
 					// optional: remove loader from DOM via event listener
 					loadingScreen.addEventListener( 'transitionend', onTransitionEnd );
@@ -322,13 +327,6 @@
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				renderer.vr.enabled = true;
 				document.body.appendChild( renderer.domElement );
-
-				navigator.xr.supportsSession('immersive-vr').then(() => {
-					document.body.appendChild( WEBVR.createButton( renderer ) );
-				}).catch(() => {
-					console.log("Immersive VR mode not supported")
-				});
-
 
 				//timer
 				timer = new THREE.Clock();
